@@ -56,7 +56,7 @@ You will be using the following technologies and platforms to set up an Agentic 
 
 ## Labs
 
-1. [Prerequisites](https://github.com/AdminTurnedDevOps/DevOps-The-Hard-Way-AWS/blob/main/prerequisites.md)
+1. [Prerequisites](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/prerequisites.md)
 
 ### Platform Engineering Assistant Labs
 
