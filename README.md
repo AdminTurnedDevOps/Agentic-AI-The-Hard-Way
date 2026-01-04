@@ -69,19 +69,22 @@ If you don't already have a Kubernetes cluster running, you can use the Terrafor
 
 These labs will use Llama for the LLM, Kubernetes for the Agent runtime, and a broken app that the PE assistant Agent will help you fix.
 
-1. The first step is to [deploy the broken app](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/tree/main/the-broken-apps/pe-assistant-app). The app is intentionally broken, so the goal is to use Agentic AI to fix it.
+1. [Deploy the broken app](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/tree/main/the-broken-apps/pe-assistant-app).
+    - The app is intentionally broken, so the goal is to use Agentic AI to fix it.
 2. [Deploy kagent](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/platform-engineering-assistant/deploy-kagent.md)
 3. [Create A Llama Deployment](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/platform-engineering-assistant/deploy-llama.md)
 4. [Create an Agent](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/platform-engineering-assistant/create-agent.md)
 5. [Deploy Agentgateway](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/platform-engineering-assistant/deploy-agw.md)
 6. [Set Up MCP Server Tool](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/platform-engineering-assistant/mcp-server-tool-setup.md)
+7. [Metrics and Traces for Agentic traffic]()
 
 ### The Observer Labs
 
 These labs will use Claude for the LLM, 
 
 1. [Create an Agent](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/tree/main/the-observer/create-agent)
-2. [Use Agent Skills]()
+2. [Test the Agent locally]()
+3. [Implement Agent Skills]()
 
 ### The Autonomous k8s Engineer Labs
 
