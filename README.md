@@ -58,8 +58,12 @@ You will be using the following technologies and platforms to set up an Agentic 
 
 ## Labs
 
-1. [Prerequisites](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/prerequisites.md)
-2. [Kubernetes Cluster Creation](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/k8s-terraform/setup.md)
+Before going into the specific Agentic labs, there are a few prereqs.
+
+[Prerequisites](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/prerequisites.md)
+
+If you don't already have a Kubernetes cluster running, you can use the Terraform configurations below to create a cluster in Azure, AWS, or GCP.
+[Kubernetes Cluster Creation](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/k8s-terraform/setup.md)
 
 ### Platform Engineering Assistant Labs
 
