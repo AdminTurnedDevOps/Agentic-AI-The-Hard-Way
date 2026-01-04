@@ -75,8 +75,13 @@ These labs will use Llama for the LLM, Kubernetes for the Agent runtime, and a b
 2. [Deploy kagent](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/platform-engineering-assistant/deploy-kagent.md)
 3. [Create A Llama Deployment](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/platform-engineering-assistant/deploy-llama.md)
 4. [Create an Agent](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/platform-engineering-assistant/create-agent.md)
-5. [Deploy Agentgateway](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/platform-engineering-assistant/deploy-agw.md)
-6. [Set Up MCP Server Tool](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/platform-engineering-assistant/mcp-server-tool-setup.md)
+5. Agentgateway installation & configuration:
+    - [Deploy Agentgateway](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/platform-engineering-assistant/deploy-agw.md)
+    - [Prompt guards]()
+    - [Inference routing]()
+6. MCP Server configuration:
+    - [Set Up MCP Server Tool](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/platform-engineering-assistant/mcp-server-tool-setup.md)
+    - [Configuring MCP Server security (access policies and auth)]()
 7. [Metrics and Traces for Agentic traffic]()
 
 ### The Observer Lab
@@ -85,7 +90,10 @@ These labs will use Claude for the LLM,
 
 1. [Create an Agent](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/tree/main/the-observer/create-agent)
 2. [Test the Agent locally]()
-3. [Implement Agent Skills]()
+3. [Set up long-term memory management]()
+4. [Implementing web search/RAG]()
+5. [Implement Agent Skills]()
+6. [Adding agentgateway for an AI Gateway]()
 
 ### The Autonomous k8s Engineer Lab
 
