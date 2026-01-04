@@ -34,16 +34,16 @@ The autonomous k8s engineer takes autonomy to a whole other level. It can figure
 
 You will be using the following technologies and platforms to set up an Agentic environment.
 
-1. Model Context Protocol (MCP)
-    - MCP Servers expose specialized tools to Agents to perform particular tasks. For example, there is a k8s MCP Server that has tools for things like listing pods, looking at events, deploying workloads, and troubleshooting. This extends the capabilities of the Agent as its trained on general k8s data, but not specialized k8s needs.
-2. CrewAI
-    - One of the Agentic frameworks for building Agents, connecting to LLMs, and various other methods of Agentic workflows in Python.
-3. Kagent
-    - An Agentic framework and runtime used to create Agents in a declarative method and deploy them on Kubernetes.
-4. Agent Skills
-    - Like an external RAG. Skills contain anything from code examples to PDFs to specialized prompts.
-5. Kubernetes
+1. Kubernetes
     - The orchestration system used to run Agents.
+2. Model Context Protocol (MCP)
+    - MCP Servers expose specialized tools to Agents to perform particular tasks. For example, there is a k8s MCP Server that has tools for things like listing pods, looking at events, deploying workloads, and troubleshooting. This extends the capabilities of the Agent as its trained on general k8s data, but not specialized k8s needs.
+3. CrewAI
+    - One of the Agentic frameworks for building Agents, connecting to LLMs, and various other methods of Agentic workflows in Python.
+4. Kagent
+    - An Agentic framework and runtime used to create Agents in a declarative method and deploy them on Kubernetes.
+5. Agent Skills
+    - Like an external RAG. Skills contain anything from code examples to PDFs to specialized prompts.
 6. Monitoring and Observability
     - All things logs, traces, and metrics for Agentic traffic ranging from how the Agent is working to the traffic flowing within the gateway. Observability in AI ranges from figuring out issues to understanding token usage and cost.
 7. AI Gateway
@@ -57,6 +57,7 @@ You will be using the following technologies and platforms to set up an Agentic 
 ## Labs
 
 1. [Prerequisites](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/prerequisites.md)
+2. [Kubernetes Cluster Creation]()
 
 ### Platform Engineering Assistant Labs
 
