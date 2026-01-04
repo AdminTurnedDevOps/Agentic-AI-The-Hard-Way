@@ -66,7 +66,7 @@ If you don't already have a Kubernetes cluster running, you can use the Terrafor
 
 [Kubernetes Cluster Creation](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/k8s-terraform/setup.md)
 
-### Platform Engineering Assistant Labs
+### Platform Engineering Assistant Lab
 
 These labs will use Llama for the LLM, Kubernetes for the Agent runtime, and a broken app that the PE assistant Agent will help you fix.
 
@@ -79,7 +79,7 @@ These labs will use Llama for the LLM, Kubernetes for the Agent runtime, and a b
 6. [Set Up MCP Server Tool](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/platform-engineering-assistant/mcp-server-tool-setup.md)
 7. [Metrics and Traces for Agentic traffic]()
 
-### The Observer Labs
+### The Observer Lab
 
 These labs will use Claude for the LLM, 
 
@@ -87,6 +87,6 @@ These labs will use Claude for the LLM,
 2. [Test the Agent locally]()
 3. [Implement Agent Skills]()
 
-### The Autonomous k8s Engineer Labs
+### The Autonomous k8s Engineer Lab
 
 1. [Deploy kagent]()
