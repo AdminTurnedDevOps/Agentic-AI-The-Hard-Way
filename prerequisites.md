@@ -12,7 +12,7 @@ Taking all of that into consideration, if you have a DevOps/Platform Engineering
 
 Because the Agents will either run locally or in a Kubernetes cluster, life is easier if you have a cloud account and/or a powerful laptop. For example, I run Agents locally, but I have an M4 Max, so a lot of RAM, a powerful CPU, and GPU cores.
 
-For Kubernetes clusters, you'll see Terraform/HCL configs for Azure, AWS, and GCP [here](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/k8s-terraform/setup.md)
+For Kubernetes clusters, you'll see Terraform/HCL configs for Azure, AWS, and GCP [here](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/k8s-terraform/setup.md).
 
 ## Installations
 
