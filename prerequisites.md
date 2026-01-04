@@ -18,6 +18,6 @@ For Kubernetes clusters, you'll see Terraform/HCL configs for Azure, AWS, and GC
 
 You should have the following to comfortably follow along:
 
-1. A Code editor like VS Code
+1. A code editor like VS Code
 2. Python 3.11+ installed
 3. Terraform
