@@ -99,8 +99,8 @@ These labs will use Claude for the LLM,
 ### The Autonomous k8s Engineer Lab
 
 1. [Deploy kagent]()
-2. [Deploy demo app]()
+2. [Deploy demo app](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/autonomous-k8s-engineer/demo-app.md)
 3. [Scale Pods down]()
-4. [Deploy the self-healing agent]()
+4. [Deploy the self-healing agent](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/autonomous-k8s-engineer/self-healing-agent.md)
 5. [Log checks]()
-6. [Deploy the self-healing checker]()
+6. [Deploy the self-healing checker](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/autonomous-k8s-engineer/self-healing-checker.md)
