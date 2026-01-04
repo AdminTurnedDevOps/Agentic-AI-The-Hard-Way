@@ -1,29 +1,3 @@
-1. Create a Model Config
-```
-kubectl apply -f - <<EOF
-apiVersion: kagent.dev/v1alpha2
-kind: ModelConfig
-metadata:
-  name: llama3-model-config
-  namespace: kagent
-spec:
-  model: llama3
-  provider: Ollama
-  ollama:
-    host: http://ollama.ollama.svc.cluster.local:80
-EOF
-```
-
-
-You should be able to see the Model connected
-```
-kubectl get modelconfig -n kagent
-NAME                   PROVIDER    MODEL
-default-model-config   Anthropic   claude-3-5-haiku-20241022
-llama3-model-config    Ollama      llama3
-```
-
-2. Create an Agent with the Model config
 ```
 kubectl apply -f - <<EOF
 apiVersion: kagent.dev/v1alpha2
@@ -49,5 +23,15 @@ spec:
       # Response format
       - ALWAYS format your response as Markdown
       - Your response will include a summary of actions you took and an explanation of the result
+    tools:
+    - type: McpServer
+      mcpServer:
+        name: github-mcp-remote
+        kind: RemoteMCPServer
+        toolNames:
+        - get_latest_release
+        - get_commit
+        - get_tag
+        - list_branches
 EOF
 ```
