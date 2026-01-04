@@ -24,14 +24,21 @@ spec:
       - ALWAYS format your response as Markdown
       - Your response will include a summary of actions you took and an explanation of the result
     tools:
-    - type: McpServer
-      mcpServer:
-        name: github-mcp-remote
+    - mcpServer:
+        apiGroup: kagent.dev
         kind: RemoteMCPServer
+        name: kagent-tool-server
         toolNames:
-        - get_latest_release
-        - get_commit
-        - get_tag
-        - list_branches
+        - k8s_check_service_connectivity
+        - k8s_describe_resource
+        - k8s_get_cluster_configuration
+        - k8s_generate_resource
+        - k8s_get_resources
+        - k8s_scale
+        - k8s_get_events
+        - k8s_execute_command
+        - k8s_delete_resource
+        - k8s_create_resource
+        - k8s_apply_manifest
 EOF
 ```

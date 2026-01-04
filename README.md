@@ -60,6 +60,7 @@ You will be using the following technologies and platforms to set up an Agentic 
 
 1. [Prerequisites](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/prerequisites.md)
 2. [Kubernetes Cluster Creation](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/k8s-terraform/setup.md)
+3. [The broken App]()
 
 ### Platform Engineering Assistant Labs
 
