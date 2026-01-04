@@ -65,10 +65,10 @@ You will be using the following technologies and platforms to set up an Agentic 
 
 These labs will use Llama for the LLM, Kubernetes for the Agent runtime, and 
 
-1. [Deploy kagent]()
+1. [Deploy kagent](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/platform-engineering-assistant/deploy-kagent.md)
 2. [Create A Llama Deployment](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/platform-engineering-assistant/deploy-llama.md)
 3. [Create an Agent](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/platform-engineering-assistant/create-agent.md)
-4. [Deploy Agentgateway]()
+4. [Deploy Agentgateway](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/platform-engineering-assistant/deploy-agw.md)
 5. [Set Up MCP Server Tool]()
 
 ### The Observer Labs
