@@ -2,6 +2,8 @@
 
 This tutorial contains two full, real-world scenarios for Agentic AI. As the industry moves from more of a GenAI mindset to an autonomous/Agentic AI way of thinking, having a few key scenarios that engineers can use to not only learn about Agentic AI, but get ideas on what they can implement with be the new need.
 
+**PLEASE NOTE:** This is currently a WIP. If you click a link and it doesn't work or is blank, that is because this project is still being worked on.
+
 ![](images/banner.png)
 
 ## The Scenarios
@@ -64,17 +66,16 @@ You will be using the following technologies and platforms to set up an Agentic 
 These labs will use Llama for the LLM, Kubernetes for the Agent runtime, and 
 
 1. [Deploy kagent]()
-2. [Create A Llama Deployment]()
-3. [Create an Agent]()
+2. [Create A Llama Deployment](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/platform-engineering-assistant/deploy-llama.md)
+3. [Create an Agent](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/platform-engineering-assistant/create-agent.md)
 4. [Deploy Agentgateway]()
 5. [Set Up MCP Server Tool]()
-6. 
 
 ### The Observer Labs
 
 These labs will use Claude for the LLM, 
 
-1. [Create an Agent]()
+1. [Create an Agent](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/tree/main/the-observer/create-agent)
 2. [Use Agent Skills]()
 
 ### The Autonomous k8s Engineer Labs
