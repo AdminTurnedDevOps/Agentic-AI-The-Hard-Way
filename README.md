@@ -79,6 +79,7 @@ These labs will use Llama for the LLM, Kubernetes for the Agent runtime, and a b
     - [Deploy Agentgateway](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/platform-engineering-assistant/deploy-agw.md)
     - [Prompt guards]()
     - [Inference routing]()
+    - [Rate limiting]()
 6. MCP Server configuration:
     - [Set Up MCP Server Tool](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/platform-engineering-assistant/mcp-server-tool-setup.md)
     - [Configuring MCP Server security (access policies and auth)]()
@@ -98,3 +99,8 @@ These labs will use Claude for the LLM,
 ### The Autonomous k8s Engineer Lab
 
 1. [Deploy kagent]()
+2. [Deploy demo app]()
+3. [Scale Pods down]()
+4. [Deploy the self-healing agent]()
+5. [Log checks]()
+6. [Deploy the self-healing checker]()
