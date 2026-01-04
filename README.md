@@ -61,12 +61,22 @@ You will be using the following technologies and platforms to set up an Agentic 
 
 ### Platform Engineering Assistant Labs
 
-1. 
+These labs will use Llama for the LLM, Kubernetes for the Agent runtime, and 
+
+1. [Deploy kagent]()
+2. [Create A Llama Deployment]()
+3. [Create an Agent]()
+4. [Deploy Agentgateway]()
+5. [Set Up MCP Server Tool]()
+6. 
 
 ### The Observer Labs
 
-1. 
+These labs will use Claude for the LLM, 
+
+1. [Create an Agent]()
+2. [Use Agent Skills]()
 
 ### The Autonomous k8s Engineer Labs
 
-1. 
+1. [Deploy kagent]()
