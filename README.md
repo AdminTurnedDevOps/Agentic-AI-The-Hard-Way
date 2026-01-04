@@ -60,17 +60,17 @@ You will be using the following technologies and platforms to set up an Agentic 
 
 1. [Prerequisites](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/prerequisites.md)
 2. [Kubernetes Cluster Creation](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/k8s-terraform/setup.md)
-3. [The broken App]()
 
 ### Platform Engineering Assistant Labs
 
-These labs will use Llama for the LLM, Kubernetes for the Agent runtime, and 
+These labs will use Llama for the LLM, Kubernetes for the Agent runtime, and a broken app that the PE assistant Agent will help you fix.
 
-1. [Deploy kagent](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/platform-engineering-assistant/deploy-kagent.md)
-2. [Create A Llama Deployment](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/platform-engineering-assistant/deploy-llama.md)
-3. [Create an Agent](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/platform-engineering-assistant/create-agent.md)
-4. [Deploy Agentgateway](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/platform-engineering-assistant/deploy-agw.md)
-5. [Set Up MCP Server Tool](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/platform-engineering-assistant/mcp-server-tool-setup.md)
+1. [Deploy the broken app]()
+2. [Deploy kagent](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/platform-engineering-assistant/deploy-kagent.md)
+3. [Create A Llama Deployment](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/platform-engineering-assistant/deploy-llama.md)
+4. [Create an Agent](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/platform-engineering-assistant/create-agent.md)
+5. [Deploy Agentgateway](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/platform-engineering-assistant/deploy-agw.md)
+6. [Set Up MCP Server Tool](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/platform-engineering-assistant/mcp-server-tool-setup.md)
 
 ### The Observer Labs
 
