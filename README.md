@@ -65,7 +65,7 @@ You will be using the following technologies and platforms to set up an Agentic 
 
 These labs will use Llama for the LLM, Kubernetes for the Agent runtime, and a broken app that the PE assistant Agent will help you fix.
 
-1. [Deploy the broken app]()
+1. The first step is to [deploy the broken app](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/tree/main/the-broken-apps/pe-assistant-app). The app is intentionally broken, so the goal is to use Agentic AI to fix it.
 2. [Deploy kagent](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/platform-engineering-assistant/deploy-kagent.md)
 3. [Create A Llama Deployment](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/platform-engineering-assistant/deploy-llama.md)
 4. [Create an Agent](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/platform-engineering-assistant/create-agent.md)
