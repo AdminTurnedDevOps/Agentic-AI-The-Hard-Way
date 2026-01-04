@@ -1,0 +1,58 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  namespace: pe-assistant
+  labels:
+    app: frontend
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: http
+    protocol: TCP
+    name: http
+  selector:
+    app: frontend
+    tier: frontend
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+  namespace: pe-assistant
+  labels:
+    app: backend
+spec:
+  type: ClusterIP
+  ports:
+  # Bug 1: Service port mismatch with container port
+  - port: 3000
+    targetPort: 8080
+    protocol: TCP
+    name: http
+  selector:
+    app: backend
+    tier: backend
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+  namespace: pe-assistant
+  labels:
+    app: redis
+spec:
+  # Bug 2: Wrong service type for internal cache (should be ClusterIP)
+  type: NodePort
+  ports:
+  - port: 6379
+    targetPort: 6379
+    protocol: TCP
+    name: redis
+    # Bug 3: NodePort specified but not in valid range or conflicts
+    nodePort: 30000
+  selector:
+    app: redis
+    # Bug 4: Missing tier label in selector

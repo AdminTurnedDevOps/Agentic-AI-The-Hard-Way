@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  namespace: pe-assistant
+  labels:
+    app: redis
+    tier: cache
+spec:
+  # Bug 1: Multiple replicas for Redis without clustering (should be 1)
+  replicas: 2
+  selector:
+    matchLabels:
+      app: redis
+      tier: cache
+  template:
+    metadata:
+      labels:
+        app: redis
+        tier: cache
+    spec:
+      containers:
+      - name: redis
+        image: redis:6.2-alpine
+        ports:
+        - containerPort: 6379
+          name: redis
+        command:
+        - redis-server
+        # Bug 2: Invalid Redis configuration argument
+        - "--maxmemory 100mb"
+        - "--maxmemory-policy allkeys-lru"
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+        livenessProbe:
+          tcpSocket:
+            port: 6379
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          exec:
+            command:
+            - redis-cli
+            - ping
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        volumeMounts:
+        - name: redis-data
+          # Bug 3: Wrong mount path for Redis data
+          mountPath: /data/redis
+      volumes:
+      - name: redis-data
+        emptyDir: {}
