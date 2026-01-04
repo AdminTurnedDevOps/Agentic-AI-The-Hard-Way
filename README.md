@@ -1,8 +1,8 @@
 # Agentic AI The Hard Way
 
-This tutorial contains two full, real-world scenarios for Agentic AI. As the industry moves from more of a GenAI mindset to an autonomous/Agentic AI way of thinking, having a few key scenarios that engineers can use to not only learn about Agentic AI, but get ideas on what they can implement with be the new need.
+This tutorial contains three full, real-world scenarios for Agentic AI. As the industry moves from more of a GenAI mindset to an autonomous/Agentic AI way of thinking, having a few key scenarios that engineers can use to not only learn about Agentic AI, but get ideas on what they can implement with be the new need.
 
-**PLEASE NOTE:** This is currently a WIP. If you click a link and it doesn't work or is blank, that is because this project is still being worked on.
+**PLEASE NOTE:** This is currently a WIP and was started on 1/4/2026. If you click a link and it doesn't work or is blank, that is because this project is still being worked on.
 
 ![](images/banner.png)
 
