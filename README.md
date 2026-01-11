@@ -77,6 +77,7 @@ These labs will use Llama for the LLM, Kubernetes for the Agent runtime, and a b
 4. [Create an Agent](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/platform-engineering-assistant/create-agent.md)
 5. Agentgateway installation & configuration:
     - [Deploy Agentgateway](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/platform-engineering-assistant/deploy-agw.md)
+    - [Create a Gateway and update the Model Config]()
     - [Prompt guards]()
     - [Inference routing]()
     - [Rate limiting]()
