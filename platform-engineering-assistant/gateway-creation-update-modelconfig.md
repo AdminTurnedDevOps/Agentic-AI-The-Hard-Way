@@ -49,6 +49,7 @@ metadata:
 type: Opaque
 stringData:
   Authorization: $ANTHROPIC_API_KEY
+  OPENAI_API_KEY: $ANTHROPIC_API_KEY
 EOF
 ```
 
@@ -137,6 +138,23 @@ curl "$INGRESS_GW_ADDRESS:8080/ollama" -v -H content-type:application/json -d '{
 
 ## Model Config Update
 
+Since the gateway is converting Ollama to OpenAI-compatible API format, treat it as an OpenAI endpoint. The secret below is also an empty secret as the OpenAI API spec is expecting a secret, but since this is a Llama Model, there is no actual authentication needed. It's just a "required parameter"
+
+```
+kubectl apply -f- <<EOF
+apiVersion: v1
+kind: Secret
+metadata:
+  name: openai-secret
+  namespace: kagent
+  labels:
+    app: agentgateway-llama
+type: Opaque
+stringData:
+  OPENAI_API_KEY: $ANTHROPIC_API_KEY
+EOF
+```
+
 ```
 kubectl apply -f - <<EOF
 apiVersion: kagent.dev/v1alpha2
@@ -146,8 +164,17 @@ metadata:
   namespace: kagent
 spec:
   model: llama3
-  provider: Ollama
-  ollama:
-    host: $INGRESS_GW_ADDRESS:8080
+  provider: OpenAI
+  apiKeySecret: openai-secret
+  apiKeySecretKey: OPENAI_API_KEY
+  openAI:
+    baseUrl: http://$INGRESS_GW_ADDRESS:8080/ollama
 EOF
 ```
+
+```
+kubectl logs -n agentgateway-system agentgateway-llama-788bd59b5d-nbth5 --tail=50
+```
+
+You should see an output similar to the below:
+![](../images/llama-agw-log.png)
