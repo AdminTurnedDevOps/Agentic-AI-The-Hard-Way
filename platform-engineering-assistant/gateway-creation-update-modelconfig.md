@@ -14,10 +14,10 @@ kubectl apply -f- <<EOF
 kind: Gateway
 apiVersion: gateway.networking.k8s.io/v1
 metadata:
-  name: agentgateway
+  name: agentgateway-llama
   namespace: agentgateway-system
   labels:
-    app: agentgateway
+    app: agentgateway-llama
 spec:
   gatewayClassName: agentgateway
   listeners:
@@ -32,7 +32,7 @@ EOF
 
 3. Capture the LB IP of the service. This will be used later to send a request to the LLM.
 ```
-export INGRESS_GW_ADDRESS=$(kubectl get svc -n agentgateway-system agentgateway -o jsonpath="{.status.loadBalancer.ingress[0]['hostname','ip']}")
+export INGRESS_GW_ADDRESS=$(kubectl get svc -n agentgateway-system agentgateway-llama -o jsonpath="{.status.loadBalancer.ingress[0]['hostname','ip']}")
 echo $INGRESS_GW_ADDRESS
 ```
 
@@ -45,7 +45,7 @@ metadata:
   name: anthropic-secret
   namespace: agentgateway-system
   labels:
-    app: agentgateway
+    app: agentgateway-llama
 type: Opaque
 stringData:
   Authorization: $ANTHROPIC_API_KEY
@@ -54,30 +54,30 @@ EOF
 
 5. Create a `Backend` object 
 
-A Backend resource to define a backing destination that you want kgateway to route to. In this case, it's Claude.
+A Backend resource to define a backing destination that you want kgateway to route to. In this case, it's Llama.
 ```
 kubectl apply -f- <<EOF
 apiVersion: agentgateway.dev/v1alpha1
 kind: AgentgatewayBackend
 metadata:
   labels:
-    app: agentgateway
+    app: agentgateway-llama
   name: llama-backend
   namespace: agentgateway-system
 spec:
   ai:
-    llm:
-      hostOverride:
-        host: http://ollama.ollama.svc.cluster.local
+    groups:
+    - providers:
+      - name: ollama-provider
+        host: ollama.ollama.svc.cluster.local
         port: 80
-      provider:
         openai:
-          model: "llama3.2"  # or whatever Llama model you have pulled in Ollama
-  policies:
-    auth:
-      secretRef:
-        # This is just a placeholder because the OpenAI API spec needs a secret passed in, even if it isn't used
-        name: anthropic-secret
+          model: "llama3:latest"
+        policies:
+          auth:
+            secretRef:
+              # This is just a placeholder because the OpenAI API spec needs a secret passed in, even if it isn't used
+              name: anthropic-secret
 EOF
 ```
 
@@ -95,22 +95,22 @@ metadata:
   name: llama
   namespace: agentgateway-system
   labels:
-    app: agentgateway
+    app: agentgateway-llama
 spec:
   parentRefs:
-    - name: agentgateway
+    - name: agentgateway-llama
       namespace: agentgateway-system
   rules:
   - matches:
     - path:
         type: PathPrefix
-        value: value: /ollama
+        value: /ollama
     filters:
     - type: URLRewrite
       urlRewrite:
         path:
           type: ReplaceFullPath
-          replaceFullPath: /v1/models
+          replaceFullPath: /v1/chat/completions
     backendRefs:
     - name: llama-backend
       namespace: agentgateway-system
@@ -121,7 +121,7 @@ EOF
 
 8. Test the LLM connectivity
 ```
-curl "$INGRESS_GW_ADDRESS:8080/ollama" -v -H content-type:application/json -H x-api-key:$ANTHROPIC_API_KEY -H "anthropic-version: 2023-06-01" -d '{
+curl "$INGRESS_GW_ADDRESS:8080/ollama" -v -H content-type:application/json -d '{
   "messages": [
     {
       "role": "system",
