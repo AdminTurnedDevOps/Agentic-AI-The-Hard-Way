@@ -140,6 +140,7 @@ curl "$INGRESS_GW_ADDRESS:8080/ollama" -v -H content-type:application/json -d '{
 
 Since the gateway is converting Ollama to OpenAI-compatible API format, treat it as an OpenAI endpoint. The secret below is also an empty secret as the OpenAI API spec is expecting a secret, but since this is a Llama Model, there is no actual authentication needed. It's just a "required parameter"
 
+1. Create the secret
 ```
 kubectl apply -f- <<EOF
 apiVersion: v1
@@ -155,6 +156,7 @@ stringData:
 EOF
 ```
 
+2. Create the ModelConfig
 ```
 kubectl apply -f - <<EOF
 apiVersion: kagent.dev/v1alpha2
@@ -171,6 +173,12 @@ spec:
     baseUrl: http://$INGRESS_GW_ADDRESS:8080/ollama
 EOF
 ```
+
+3. In kagent, create a new Agent with the `llama3-model-config` used.
+
+4. Run the Agent.
+
+![](../images/run-llama-agent.png)
 
 ```
 kubectl logs -n agentgateway-system agentgateway-llama-788bd59b5d-nbth5 --tail=50
