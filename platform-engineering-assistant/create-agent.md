@@ -51,3 +51,5 @@ spec:
       - Your response will include a summary of actions you took and an explanation of the result
 EOF
 ```
+
+You can now use the Agent as it is routing through the k8s Ollama Service. However, the problem with this is there is zero security, guard rails, or observability implemented. That's why an AI Gateway is needed. In the upcoming sections, you'll see how to deploy agentgateway and route your Ollama traffic through agentgateway. That way, when you use an Agent in kagent with a Llama configuration, the traffic will be routed through a proper AI gateway.
