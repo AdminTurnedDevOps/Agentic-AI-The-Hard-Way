@@ -1,7 +1,12 @@
-
+The demo app below is a simple http-based app used to give you a lite configuration to work with when testing out the autonomous k8s agent workflow. Deploy the below:
 
 ```
 kubectl apply -f - <<EOF
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: demo
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:

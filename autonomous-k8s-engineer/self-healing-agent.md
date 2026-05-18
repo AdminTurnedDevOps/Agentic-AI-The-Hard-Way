@@ -1,3 +1,7 @@
+The self-healing Agent below has particular prompts/system messages so it knows what to do. One of the things it checks for is if the `httpbin` demo app has 3 Pods running. As with any autonomous Agent, it can ACT and PERFORM a specific action autonomously, but it needs some direction. It needs to know what the state is actually supposed to be, or rather, what the user wants the state to be. Otherwise, its just guessing.
+
+When you're ready, deploy the autonomous agent below.
+
 ```
 kubectl apply -f - <<EOF
 apiVersion: kagent.dev/v1alpha2

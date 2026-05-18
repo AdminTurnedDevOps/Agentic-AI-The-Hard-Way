@@ -1,3 +1,8 @@
+The Agent is now deployed, but here's the problem - how does the Agent know to actually check the httpbin app? It needs a way to autonomously check it in an interval-like fashion. That's where something like a cronjob can be set up for Agent to check the applications health status in intervals so if its failing, the Agent can fix it.
+
+Notice how the prompt/system message has the Agent go and check the state of the Pods running. The real goal of this CronJob is essentially to run a prompt every 60 seconds.
+
+Deploy the below:
 
 ```
 kubectl apply -f - <<EOF
@@ -20,12 +25,12 @@ spec:
           restartPolicy: OnFailure
           containers:
           - name: trigger
-            image: curlimages/curl:latest
+            image: curlimages/curl:8.12.1
             command:
             - /bin/sh
             - -c
             - |
-              curl -s -X POST http://self-healing-agent:8080/ \
+              curl -s -X POST http://kagent-controller.kagent:8083/api/a2a/kagent/self-healing-agent/ \
                 -H "Content-Type: application/json" \
                 -d '{
                   "jsonrpc": "2.0",

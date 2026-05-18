@@ -5,14 +5,21 @@ For the purposes of this lab and to switch things up a bit, instead of using a L
 export OPENAI_API_KEY=""
 ```
 
-2. Install the kagent CRDs
+2. Create a k8s secret with the API key
+```
+kubectl create secret generic kagent-openai \
+--from-literal=OPENAI_API_KEY=$OPENAI_API_KEY \
+-n kagent
+```
+
+3. Install the kagent CRDs
 ```
 helm install kagent-crds oci://ghcr.io/kagent-dev/kagent/helm/kagent-crds \
     --namespace kagent \
     --create-namespace
 ```
 
-3. Install kagent with OpenAI being the base provider (you can update or change this later)
+4. Install kagent with OpenAI being the base provider (you can update or change this later)
 ```
 helm upgrade --install kagent oci://ghcr.io/kagent-dev/kagent/helm/kagent \
     --namespace kagent \

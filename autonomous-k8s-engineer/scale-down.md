@@ -3,4 +3,4 @@
 kubectl scale deployment httpbin -n demo --replicas=0
 ```
 
-The goal here is for the self-healing Agent to see this and fix it. The ReplicaSet Controller won't automatically scale the Pods back up because this command explicitly tells the Deployment object to scale them down, so it's seen as fine by the Controller.
+The goal here is for the self-healing Agent to see this and fix it. The ReplicaSet Controller won't automatically scale the Pods back up because this command explicitly tells the Deployment object to scale them down, so it's seen as fine and acceptable by the Controller. However, from a usability perspective, the app won't be available.
