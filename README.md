@@ -101,7 +101,7 @@ These labs will use Llama for the LLM, Kubernetes for the Agent runtime, and a b
 
 ### The Observer Lab
 
-These labs will use Claude for the LLM, 
+These labs will use Claude for the LLM.
 
 1. [Create an Agent](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/tree/main/the-observer/create-agent)
 2. [Test the Agent locally]()
@@ -113,6 +113,8 @@ These labs will use Claude for the LLM,
 8. [Implementing Agent Registry to store Skills and Prompts]()
 
 ### The Autonomous k8s Engineer Lab
+
+These labs will use Claude for the LLM.
 
 1. [Deploy kagent](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/platform-engineering-assistant/deploy-kagent.md)
 2. [Deploy demo app](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/autonomous-k8s-engineer/demo-app.md)
