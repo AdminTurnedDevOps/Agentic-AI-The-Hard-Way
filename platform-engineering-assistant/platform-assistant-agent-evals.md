@@ -167,7 +167,7 @@ export OTEL_EXPORTER_OTLP_ENDPOINT=http://${AGENTEVALS_IP}:4318
 
 ---
 
-## The two agents under test
+## Agent To Test
 
 Install both agents' deps into the same venv:
 
