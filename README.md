@@ -98,6 +98,7 @@ These labs will use Llama for the LLM, Kubernetes for the Agent runtime, and a b
 7. [Metrics and Traces for Agentic traffic]()
     - [Agent Identity]()
 8. [Implementing Agent Registry for Shadow AI]()
+9. [Researcher Agent + Agent Evals For Platform Engineering Tasks]()
 
 ### The Observer Lab
 
@@ -109,8 +110,7 @@ These labs will use Claude for the LLM.
 4. [Implementing web search/RAG]()
 5. [Implement Agent Skills]()
 6. [Adding agentgateway for an AI Gateway]()
-7. [Evaluating the agent with Agent Evals]()
-8. [Implementing Agent Registry to store Skills and Prompts]()
+7. [Implementing Agent Registry to store Skills and Prompts]()
 
 ### The Autonomous k8s Engineer Lab
 
