@@ -98,7 +98,7 @@ These labs will use Llama for the LLM, Kubernetes for the Agent runtime, and a b
 7. [Metrics and Traces for Agentic traffic]()
     - [Agent Identity]()
 8. [Implementing Agent Registry for Shadow AI]()
-9. [Researcher Agent + Agent Evals For Platform Engineering Tasks]()
+9. [Researcher Agent + Agent Evals For Platform Engineering Tasks](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/platform-engineering-assistant/platform-assistant-agent-evals.md)
 
 ### The Observer Lab
 
