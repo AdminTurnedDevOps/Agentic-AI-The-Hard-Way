@@ -85,6 +85,7 @@ Below are some ideas on what you can use to set up your AI workstation. However,
 2. [Terminal]()
 3. [Editor]()
 4. [LLM Provider Subscription/Runtime]()
+   - [Plugins]()
 5. [Local Models]()
 
 ### Platform Engineering Assistant Lab
