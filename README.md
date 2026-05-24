@@ -81,12 +81,12 @@ As you embark down the journey of using AI, you may want your batttle rig to be 
 
 Below are some ideas on what you can use to set up your AI workstation. However, what I will say is your setup should also be what feels right to you. If you see something in this section that you don't like, or that you want to replace, that's awesome. It should feel like "yours". There's no right or wrong way. These are just a few things I've picked up for maximizing my Agent workflows.
 
-1. [Laptop]()
-2. [Terminal]()
-3. [Editor]()
+1. [Laptop](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/workstation-setup/laptop.md)
+2. [Terminal](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/workstation-setup/terminal.md)
+3. [IDE](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/workstation-setup/code-editor.md)
 4. [LLM Provider Subscription/Runtime]()
-   - [Plugins]()
-5. [Local Models]()
+   - [Plugins](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/workstation-setup/a-few-key-features.md)
+5. [Local Models](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/workstation-setup/local-models.md)
 
 ### Platform Engineering Assistant Lab
 
