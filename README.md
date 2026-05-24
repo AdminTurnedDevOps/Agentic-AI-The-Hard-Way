@@ -75,6 +75,18 @@ If you don't already have a Kubernetes cluster running, you can use the Terrafor
 
 [Kubernetes Cluster Creation](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/k8s-terraform/setup.md)
 
+## AI Workstation Setup
+
+As you embark down the journey of using AI, you may want your batttle rig to be set up in the best possible way to ensure maximum fun-ness when testing out, enjoying, and diving into AI.
+
+Below are some ideas on what you can use to set up your AI workstation. However, what I will say is your setup should also be what feels right to you. If you see something in this section that you don't like, or that you want to replace, that's awesome. It should feel like "yours". There's no right or wrong way. These are just a few things I've picked up for maximizing my Agent workflows.
+
+1. [Laptop]()
+2. [Terminal]()
+3. [Editor]()
+4. [LLM Provider Subscription/Runtime]()
+5. [Local Models]()
+
 ### Platform Engineering Assistant Lab
 
 These labs will use Llama for the LLM, Kubernetes for the Agent runtime, and a broken app that the PE assistant Agent will help you fix.
