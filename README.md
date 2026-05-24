@@ -83,7 +83,7 @@ Below are some ideas on what you can use to set up your AI workstation. However,
 
 1. [Laptop](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/workstation-setup/laptop.md)
 2. [Terminal/IDE](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/workstation-setup/terminal.md)
-3. [LLM Provider Subscription/Runtime]()
+3. [LLM Provider Subscription/Runtime](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/workstation-setup/agent-runtime.md)
    - [Key Implementations](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/workstation-setup/a-few-key-features.md)
 4. [Local Models](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/workstation-setup/local-models.md)
 
