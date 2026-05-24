@@ -14,3 +14,6 @@ Try both and see what works for you:
 Top tools right now in the terminal space:
 1. VS Code
 2. cmux
+
+![](images/cmux1.png)
+![](images/cmux2.png)
