@@ -46,3 +46,18 @@ helm upgrade --install kagent \
   --set substrateWorkerPool.replicas=1 \
   --set substrateWorkerPool.ateomImage=ghcr.io/kagent-dev/substrate/ateom-gvisor:v0.0.6
 ```
+
+## Worker Pools
+
+By default, there is one Worker Pool readily available. However, if you want to scale that up, you can.
+
+```bash
+--set substrateWorkerPool.replicas=3
+```
+
+Example:
+```bash
+helm upgrade kagent oci://ghcr.io/kagent-dev/kagent/helm/kagent \
+  --version 0.9.9 --namespace kagent --reuse-values \
+  --set substrateWorkerPool.replicas=3
+```
