@@ -49,6 +49,8 @@ helm upgrade --install kagent \
 
 ## Worker Pools
 
+Worker Pools are a set of pre-warmed, long-running  Pods managed to host Actors (AI agents or stateful tasks)
+
 By default, there is one Worker Pool readily available. However, if you want to scale that up, you can.
 
 ```bash
