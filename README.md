@@ -117,8 +117,9 @@ Agent Sandboxing and isolation has come a far away, and it's especially importan
 
 This section goes over using kagent + Agent Substrate, which is the way to perform both software and hardware-level isolation for all Agents in Kubernetes.
 
+[prereq - learn Substrate]()
 1. [Install Sandbox](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent/installation.md)
-2. [Using Kagent Substrate]()
+2. [Using Kagent Substrate](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent/kagent-substrate.md)
 
 ### The Observer
 
