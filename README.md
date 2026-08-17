@@ -118,9 +118,7 @@ Agent Sandboxing and isolation has come a far away, and it's especially importan
 This section goes over using kagent + Agent Substrate, which is the way to perform both software and hardware-level isolation for all Agents in Kubernetes.
 
 1. [Install Sandbox](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent/installation.md)
-2. [Upstream inference routing with agentgateway](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent/inference-with-agw.md)
-3. [NemoClaw + OpenShell](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent/nemoclaw-openshell.md)
-4. [Sandbox policies]()
+2. [Using Kagent Substrate]()
 
 ### The Observer
 
