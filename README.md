@@ -86,7 +86,7 @@ Below are some ideas on what you can use to set up your AI workstation. However,
 3. [LLM Provider Subscription/Runtime](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/workstation-setup/agent-runtime.md)
    - [Key Implementations](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/workstation-setup/a-few-key-features.md)
 
-### Platform Engineering Assistant Lab
+### Platform Engineering Assistant
 
 These labs will use Llama for the LLM, Kubernetes for the Agent runtime, and a broken app that the PE assistant Agent will help you fix.
 
@@ -111,7 +111,18 @@ These labs will use Llama for the LLM, Kubernetes for the Agent runtime, and a b
 8. [Implementing Agent Registry for Shadow AI]()
 9. [Researcher Agent + Agent Evals For Platform Engineering Tasks](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/platform-engineering-assistant/platform-assistant-agent-evals.md)
 
-### The Observer Lab
+### Isolated Agents
+
+Agent Sandboxing and isolation has come a far away, and it's especially important after finding out just how "sneaky" an Agent can be (e.g, the OpenAI/Hugging Face breakout). Organizations small and large are implementing solutions to ensure Agents can, and should, only do what they're supposed to be able to do. The other reality is what is actually isolated (agent calls to LLMs, MCP Servers, other Agents, etc.), which also needs to be accounted for.
+
+This section goes over using kagent + Agent Substrate, which is the way to perform both software and hardware-level isolation for all Agents in Kubernetes.
+
+1. [Install Sandbox](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent/installation.md)
+2. [Upstream inference routing with agentgateway](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent/inference-with-agw.md)
+3. [NemoClaw + OpenShell](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent/nemoclaw-openshell.md)
+4. [Sandbox policies]()
+
+### The Observer
 
 These labs will use Claude for the LLM.
 
@@ -123,7 +134,7 @@ These labs will use Claude for the LLM.
 6. [Adding agentgateway for an AI Gateway]()
 7. [Implementing Agent Registry to store Skills and Prompts]()
 
-### The Autonomous k8s Engineer Lab
+### The Autonomous k8s Engineer
 
 These labs will use Claude for the LLM.
 
@@ -133,10 +144,3 @@ These labs will use Claude for the LLM.
 4. [Deploy the self-healing agent](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/autonomous-k8s-engineer/self-healing-agent.md)
 5. [Log checks](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/autonomous-k8s-engineer/logs.md)
 6. [Deploy the self-healing checker](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/autonomous-k8s-engineer/self-healing-checker.md)
-
-### Isolated Agent
-
-1. [Run Sandbox](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent/installation.md)
-2. [Upstream inference routing with agentgateway](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent/inference-with-agw.md)
-3. [NemoClaw + OpenShell](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent/nemoclaw-openshell.md)
-4. [Sandbox policies]()

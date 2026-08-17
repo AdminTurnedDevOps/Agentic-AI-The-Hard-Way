@@ -1,13 +1,37 @@
-1. Install OpenShell
+The below installs both kagent and Agent Substrate.
 
-```
-curl -LsSf https://raw.githubusercontent.com/NVIDIA/OpenShell/main/install.sh | sh
+### Kagent
+
+There are several providers that are readily available to use with kagent (OpenAI, Anthropic, Gemini, Azure OpenAI, and Ollama)
+
+For the purposes of this install, you can use OpenAI, but feel free to switch (https://kagent.dev/docs/kagent/introduction/installation/#using-helm)
+
+```bash
+export OPENAI_API_KEY="your-api-key-here"
+
+helm install kagent-crds oci://ghcr.io/kagent-dev/kagent/helm/kagent-crds \
+    --namespace kagent \
+    --create-namespace
+
+helm install kagent oci://ghcr.io/kagent-dev/kagent/helm/kagent \
+    --namespace kagent \
+    --set providers.default=openAI \
+    --set providers.openAI.apiKey=$OPENAI_API_KEY
 ```
 
-2. We're going to be changing this up in the next lab, but for now just so you can see how it works, run the following:
-```
-openshell sandbox create -- claude
+
+### Substrate
+
+```bash
+helm upgrade --install substrate-crds \
+  oci://ghcr.io/kagent-dev/substrate/helm/substrate-crds \
+  --version 0.0.6 \
+  --namespace ate-system --create-namespace --wait
 ```
 
-3. You'll be dropped into Claude Code much like on your local terminal.
-![](images/1.png)
+```bash
+helm upgrade --install substrate \
+  oci://ghcr.io/kagent-dev/substrate/helm/substrate \
+  --version 0.0.6 \
+  --namespace ate-system --wait --timeout 10m
+```
