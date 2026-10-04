@@ -287,7 +287,7 @@ Approving this spec approves these edits and nothing else:
 | File:line | Change |
 |---|---|
 | `platform-engineering-assistant/deploy-agw.md:17` | `![here](https://agentgateway.dev/...)` → `[here](...)`. Image syntax was used for a link. |
-| `isolated-agent/installation.md:3` | `![Agent Substrate]()` → `[Agent Substrate](https://github.com/agent-substrate/substrate)`. The URL is to be confirmed with the author during implementation; if none is given, plain text "Agent Substrate". |
+| `isolated-agent/installation.md:3` | `![Agent Substrate](https://github.com/agent-substrate/substrate)` → `[Agent Substrate](https://github.com/agent-substrate/substrate)`. The author added the URL; the leading `!` still makes it image syntax. |
 | `isolated-agent/kagent-substrate.md:86` | `![here](https://kagent.dev/...)` → `[here](...)`. |
 | `README.md:7` | Add alt text to the banner: "Agentic AI workloads architecture: AI agent, orchestrator, and task execution with feedback and human-in-the-loop review". |
 | `platform-engineering-assistant/gateway-creation-update-modelconfig.md:181`, `:188` | Add alt text to the two screenshots. |
