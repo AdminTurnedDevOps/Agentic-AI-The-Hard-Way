@@ -39,7 +39,11 @@ const index = labs.findIndex((l) => l.route === route);
 const isEmpty = props.kind === 'md' && !body.trim();
 const Content = props.kind === 'md' && !isEmpty ? (await render(props.entry)).Content : null;
 const folder = props.kind === 'dir' ? folderFiles(REPO_ROOT, props.dir) : null;
-const folderEntries = folder ? await getCollection('pages', (e) => folder.md.includes(`${e.id}.md`)) : [];
+const folderEntries = folder
+  ? (await getCollection('pages', (e) => folder.md.includes(`${e.id}.md`))).sort(
+      (a, b) => folder.md.indexOf(`${a.id}.md`) - folder.md.indexOf(`${b.id}.md`),
+    )
+  : [];
 const folderContents = await Promise.all(folderEntries.map(async (e) => (await render(e)).Content));
 ---
 <LabLayout
