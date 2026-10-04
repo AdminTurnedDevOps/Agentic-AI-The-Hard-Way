@@ -1,4 +1,16 @@
+# Agent
+
+Two things are needed to create an Agent:
+
+1. A snapshot location for the Actors
+2. An Agent image
+
+By default, the snapshot location is `gs://ate-snapshots/kagent/` and just lives locally. It's good for demo/testing purposes, but not production.
+
+If you want to create your own storage location, see the next section.
+
 ## Storage Location
+Below is an example if you use Google Cloud Storage (GCS) to create storage for your snapshots
 First, you'll need to create a snapshot location. In this case, you'd use GS (Google Storage) in GCP. The snapshot location is for your Actors (where your Agents run) so the state can be saved/stored.
 
 ```bash
@@ -14,52 +26,61 @@ gcloud storage buckets create "gs://${BUCKET_NAME}" \
 
 ## Harness Implementation
 
-Kagent supports two Harnesses:
-1. Hermes
-2. OpenClaw
+Kagent supports the following harnesses:
+1. `kagent`
+2. `codex`
+3. `claude`
+4. `byo`
 
-And both can be used with Agent Substrate to ensure that your Harness runs in an isolated sandbox.
+And all four can be used with Agent Substrate to ensure that your Harness runs in an isolated sandbox.
 
-You can implement this with the `AgentHarness` object and specify the backend (`openclaw` or `hermes`)
+You can implement this with the `Harness` object and specify the harness. In the example below, its using the kagent harness. For the `workload.image`, you can create your own image for an Agent/Harness you want to run or use the Go ADK sample like in the below.
+
+There are three objects below:
+
+`Harness`: Which Agent Harness you want to use
+`AgentTemplate`: This is the template (configs) that the Agent will use (think of it like a golden image, but "image" is a heavy word)
+`Agent`: The actual running Agent
 
 ```bash
-kubectl apply -f - <<'EOF'
-apiVersion: kagent.dev/v1alpha2
-kind: AgentHarness
+kubectl apply -f - <<EOF
+apiVersion: api.kagent.dev/v1alpha3
+kind: Harness
 metadata:
-  name: my-openclaw
+  name: kagent
   namespace: kagent
 spec:
-  backend: openclaw
-  description: OpenClaw on Agent Substrate (kagent-ee-felevan)
-  modelConfigRef: default-model-config
+  kagent: {}
+  workload:
+    image: ghcr.io/kagent-dev/kagent/golang-adk@sha256:215417b5401310bb496ae1687bb8622f93fd19991a218c6a218987836e71da84
   substrate:
     workerPoolRef:
       name: kagent-default
-    snapshotsConfig:
-      location: gs://ate-snapshots-YOUR_PROJECT_ID//kagent/my-openclaw
+    snapshotPolicy:
+      location: s3://ate-snapshots/kagent/
+---
+apiVersion: api.kagent.dev/v1alpha3
+kind: AgentTemplate
+metadata:
+  name: assistant
+  namespace: kagent
+spec:
+  modelConfig:
+    name: default-model-config
+  description: A substrate-backed assistant.
+  systemPrompt: You are a helpful assistant running on kagent.
+---
+apiVersion: api.kagent.dev/v1alpha3
+kind: Agent
+metadata:
+  name: assistant
+  namespace: kagent
+spec:
+  templateRef:
+    name: assistant
+  harnessRef:
+    name: kagent
 EOF
 ```
 
-
-## Standalone Agent
-
-If you'd prefer a standalone Agent (not using a specific Harness), you can deploy an Agent within an Actor with the `SandboxAgent` object.
-
-The Agents can be both declarative (defined in YAML) or BYO (bring your own framework like ADK, CrewAI, etc)
-
-```bash
-apiVersion: kagent.dev/v1alpha2
-kind: SandboxAgent
-metadata:
-  name: my-sandbox-agent
-  namespace: kagent
-spec:
-  type: Declarative   # or BYO
-  declarative:
-    modelConfig: my-model
-    # instructions, tools, etc.
-  substrate:
-    workerPoolRef:
-      name: kagent-default
-```
+You can see more configurations and options ![here](https://kagent.dev/docs/kagent/1.x/agents/agent-harness/)
