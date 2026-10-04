@@ -48,8 +48,8 @@ Check progress:
 
 ```bash
 dig NS agenticfieldguide.ai +short
-az staticwebapp hostname show -n agentic-field-guide -g rg-agentic-field-guide --hostname agenticfieldguide.ai --query status
-az staticwebapp hostname show -n agentic-field-guide -g rg-agentic-field-guide --hostname www.agenticfieldguide.ai --query status
+az staticwebapp hostname show -n agentic-field-guide -g agenticfieldguide --hostname agenticfieldguide.ai --query status
+az staticwebapp hostname show -n agentic-field-guide -g agenticfieldguide --hostname www.agenticfieldguide.ai --query status
 curl -sI https://agenticfieldguide.ai | grep -i content-security-policy
 ```
 
