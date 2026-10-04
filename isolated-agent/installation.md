@@ -1,6 +1,54 @@
 The below installs both kagent and Agent Substrate.
 
-**please note**: ![Agent Substrate]() is a fast-moving project. Expect changes, upgrades, and object implementations that are net new.
+**please note**: ![Agent Substrate](https://github.com/agent-substrate/substrate) is a fast-moving project. Expect changes, upgrades, and object implementations that are net new.
+
+## Prerequisites
+
+Tested with:
+
+| Tool | Version |
+|------|---------|
+| minikube | v1.39.0 |
+| Kubernetes | v1.37.0 |
+| kubectl | v1.37.1 |
+| Helm | v4.2.0 |
+| jq | 1.8.1 |
+| OpenSSL | 3.6.3 |
+| `kubectl ate` plugin | built from [agent-substrate/substrate](https://github.com/agent-substrate/substrate) |
+
+Install the `kubectl ate` plugin from a clone of the Substrate repo:
+
+```bash
+git clone https://github.com/agent-substrate/substrate.git
+cd substrate
+go install ./cmd/kubectl-ate
+```
+
+### Cluster requirements
+
+Substrate's `podcertificate-controller` creates `ClusterTrustBundle` objects using the `certificates.k8s.io/v1beta1` API. A default Kubernetes v1.37 cluster only serves `certificates.k8s.io/v1`, so a plain `minikube start` isn't enough. Without `v1beta1`, the Substrate Pods sit in `ContainerCreating` with `FailedMount ... matched zero ClusterTrustBundles` events.
+
+Start minikube with the `v1beta1` API and the required feature gates enabled:
+
+```bash
+minikube start \
+  --extra-config=apiserver.runtime-config=certificates.k8s.io/v1beta1=true \
+  --feature-gates=ClusterTrustBundle=true,ClusterTrustBundleProjection=true,PodCertificateRequest=true
+```
+
+If minikube is already running, the same command restarts it with the new settings.
+
+Confirm the API is served before continuing:
+
+```bash
+kubectl api-versions | grep certificates.k8s.io/v1beta1
+```
+
+Expected output:
+
+```text
+certificates.k8s.io/v1beta1
+```
 
 ## Install
 
@@ -119,7 +167,7 @@ helm upgrade --install kagent \
   --namespace kagent --create-namespace --timeout 10m \
   -f - <<EOF
 providers:
-  default: Anthropic
+  default: anthropic
   anthropic:
     apiKey: ${ANTHROPIC_API_KEY}
 controller:
