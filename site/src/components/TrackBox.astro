@@ -1,0 +1,25 @@
+---
+import NavList from './NavList.astro';
+import { countItems, firstLabRoute, type NavGroup } from '../lib/readme-nav';
+
+interface Props {
+  track: NavGroup;
+}
+const { track } = Astro.props;
+const href = firstLabRoute(track);
+const { labs, soon } = countItems(track);
+const big = labs + soon >= 6;
+const count =
+  labs === 0 ? 'Coming soon' : `${labs} ${labs === 1 ? 'lab' : 'labs'}${soon ? `, ${soon} coming soon` : ''}`;
+---
+<article
+  id={track.slug}
+  class:list={['track', big ? 'sk' : 'sk-alt', track.color ? `fill-${track.color}` : 'is-empty', { 'is-big': big }]}
+  data-box-href={href ?? undefined}
+>
+  <h3>{href ? <a href={href}>{track.title}</a> : track.title}</h3>
+  {track.blurb && <p class="track-blurb">{track.blurb}</p>}
+  {track.beforeYouStart.length > 0 && <NavList items={track.beforeYouStart} compact />}
+  {track.items.length > 0 && <NavList items={track.items} ordered compact />}
+  <p class="track-count">{count}</p>
+</article>
