@@ -9,6 +9,7 @@ test('home renders every README track', async ({ page }) => {
   for (const track of nav.tracks) {
     await expect(page.locator(`#${track.slug} h3`)).toHaveText(track.title);
   }
+  await expect(page.locator('#scenarios')).not.toContainText(/\bWIP\b/);
   await expect(page.getByText('work in progress', { exact: false })).toHaveCount(0);
 });
 

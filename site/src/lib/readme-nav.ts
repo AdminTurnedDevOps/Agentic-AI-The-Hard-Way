@@ -151,7 +151,7 @@ export function parseReadmeNav(markdown: string, fs: RepoFs): SiteNav {
     }
   }
 
-  for (const track of tracks) if (!track.blurb) track.blurb = fallbackBlurb.get(track) ?? null;
+  for (const track of tracks) if (!track.blurb && flattenLabs(track).length > 0) track.blurb = fallbackBlurb.get(track) ?? null;
   let colorIndex = 0;
   for (const track of tracks) {
     if (flattenLabs(track).length > 0) track.color = TRACK_COLORS[colorIndex++ % TRACK_COLORS.length];

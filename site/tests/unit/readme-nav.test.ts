@@ -121,11 +121,11 @@ describe('parseReadmeNav: structure', () => {
 });
 
 describe('parseReadmeNav: blurbs, colors, slugs', () => {
-  it('matches scenario blurbs by prefix and falls back to the first plain paragraph', () => {
+  it('matches scenario blurbs by prefix and falls back to the first plain paragraph for tracks with labs', () => {
     const [alpha, iso, envs, beta] = nav().tracks;
     expect(alpha.blurb).toBe('Alpha scenario blurb.');
     expect(iso.blurb).toBe('Isolated blurb.');
-    expect(envs.blurb).toBe('WIP');
+    expect(envs.blurb).toBeNull();
     expect(beta.blurb).toBeNull();
   });
   it('colors only tracks with real labs, in README order', () => {
@@ -184,6 +184,11 @@ describe('the real README', () => {
     };
     const n = parseReadmeNav(fs.readFileSync(path.join(root, 'README.md'), 'utf8'), real);
     expect(n.intro.length).toBeGreaterThan(40);
+    const readme = fs.readFileSync(path.join(root, 'README.md'), 'utf8');
+    const afterLabs = readme.slice(readme.search(/^## Labs\s*$/m));
+    const trackHeadings = afterLabs.match(/^### .+$/gm) ?? [];
+    expect(n.tracks.map((t) => t.title)).toEqual(trackHeadings.map((h) => h.replace(/^###\s+/, '').trim()));
+    expect(n.sections.some((s) => /workstation/i.test(s.title))).toBe(true);
     expect(n.tracks.length).toBeGreaterThan(0);
     expect(n.tracks.some((t) => flattenLabs(t).length > 0)).toBe(true);
     expect(n.startHere.items.length).toBeGreaterThan(0);

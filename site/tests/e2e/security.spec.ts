@@ -8,6 +8,7 @@ test('secrets get no input, are never stored, and stay as $VAR when copied', asy
   await page.locator('#var-INGRESS_GW_ADDRESS').fill('1.2.3.4');
   const stored = await page.evaluate(() => localStorage.getItem('afg:vars') ?? '');
   expect(stored).not.toContain('ANTHROPIC');
+  expect(stored).toContain('INGRESS_GW_ADDRESS');
   expect(await copyFrom(page, 'anthropic-secret')).toContain('$ANTHROPIC_API_KEY');
 });
 
