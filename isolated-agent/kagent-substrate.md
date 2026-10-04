@@ -5,7 +5,7 @@ Two things are needed to create an Agent:
 1. A snapshot location for the Actors
 2. An Agent image
 
-By default, the snapshot location is `gs://ate-snapshots/kagent/` and just lives locally. It's good for demo/testing purposes, but not production.
+By default, the snapshot location is `s3://ate-snapshots/kagent/` and just lives locally. It's good for demo/testing purposes, but not production.
 
 If you want to create your own storage location, see the next section.
 

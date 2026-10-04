@@ -29,8 +29,7 @@ spec:
           valueFrom:
             configMapKeyRef:
               name: app-config
-              # Bug 1: Wrong key name (should be BACKEND_SERVICE_URL)
-              key: BACKEND_URL
+              key: BACKEND_SERVICE_URL
         resources:
           requests:
             # Bug 2: Memory request typo (should be 128Mi)
@@ -48,8 +47,7 @@ spec:
         readinessProbe:
           httpGet:
             path: /health
-            # Bug 3: Wrong port for readiness probe
-            port: 8080
+            port: 80
           initialDelaySeconds: 5
           periodSeconds: 5
         volumeMounts:

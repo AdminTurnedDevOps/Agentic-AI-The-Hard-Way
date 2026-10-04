@@ -5,7 +5,6 @@ metadata:
   name: app-config
   namespace: pe-assistant
 data:
-  # Bug 1: Wrong key name (frontend expects BACKEND_URL but this is BACKEND_SERVICE_URL)
   BACKEND_SERVICE_URL: "http://backend:3000"
   REDIS_HOST: "redis"
   REDIS_PORT: "6379"
@@ -29,8 +28,7 @@ data:
         }
 
         location /api {
-            # Bug 2: Wrong backend service name (should match service name)
-            proxy_pass http://backend-service:3000;
+            proxy_pass http://backend:3000;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;

@@ -8,11 +8,12 @@ This tutorial contains four full, real-world scenarios for Agentic AI. As the in
 
 ## The Scenarios
 
-There will be three scenarios that you can follow throughout this tutorial:
+There will be four scenarios that you can follow throughout this tutorial:
 
 1. Platform Engineering Assistant
 2. The Observer
 3. Autonomous k8s Engineer
+4. Isolated Agents
 
 All projects have one goal - give you a real-world, production-grade experience for thinking about and implementing Agentic AI workflows from the Agent build to the runtime to the scalability, security, and everything in-between.
 
@@ -127,7 +128,7 @@ WIP
 
 ### The Observer
 
-These labs will use Claude for the LLM.
+These labs will use DeepSeek R1 (`deepseek-r1:8b`) running locally with Ollama for the LLM.
 
 1. [Create an Agent](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/tree/main/the-observer/create-agent)
 2. [Test the Agent locally]()
@@ -139,9 +140,9 @@ These labs will use Claude for the LLM.
 
 ### The Autonomous k8s Engineer
 
-These labs will use Claude for the LLM.
+These labs will use an OpenAI GPT Model for the LLM (or any other [kagent supported provider](https://kagent.dev/docs/kagent/supported-providers)).
 
-1. [Deploy kagent](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/platform-engineering-assistant/deploy-kagent.md)
+1. [Deploy kagent with OpenAI](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/autonomous-k8s-engineer/openai-install.md)
 2. [Deploy demo app](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/autonomous-k8s-engineer/demo-app.md)
 3. [Scale Pods down](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/autonomous-k8s-engineer/scale-down.md)
 4. [Deploy the self-healing agent](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/autonomous-k8s-engineer/self-healing-agent.md)

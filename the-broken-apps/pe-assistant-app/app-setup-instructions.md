@@ -1,7 +1,10 @@
 ### Deploy the Application
 
+From the root of this repo, create the namespace first, then apply the rest of the manifests:
+
 ```
-kubectl apply -f k8s/
+kubectl apply -f the-broken-apps/pe-assistant-app/namespace.yaml
+kubectl apply -f the-broken-apps/pe-assistant-app/
 ```
 
 ### Symptoms You Might Encounter:

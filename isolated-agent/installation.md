@@ -90,7 +90,7 @@ jwtProviders:
 "
 ```
 
-8. Role Substrate so the Pod mounts the identity.
+8. Roll Substrate so the Pod mounts the identity.
 
 ```
 helm upgrade substrate \

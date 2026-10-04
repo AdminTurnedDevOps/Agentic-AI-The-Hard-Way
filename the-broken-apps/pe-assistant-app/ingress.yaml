@@ -25,12 +25,6 @@ spec:
         pathType: Exact
         backend:
           service:
-            # Bug 3: Wrong service name (should be 'backend')
-            name: backend-service
+            name: backend
             port:
               number: 3000
-  # Bug 4: TLS section references non-existent secret
-  tls:
-  - hosts:
-    - pe-assistant.local
-    secretName: pe-assistant-tls

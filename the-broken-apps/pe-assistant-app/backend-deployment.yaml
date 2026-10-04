@@ -46,8 +46,7 @@ spec:
             cpu: "50m"
           limits:
             memory: "128Mi"
-            # Bug 2: CPU limit lower than request (invalid)
-            cpu: "25m"
+            cpu: "100m"
         livenessProbe:
           httpGet:
             path: /
