@@ -23,6 +23,7 @@ export function cspFor(themeScript) {
 
 export function buildSwaConfig(themeScript) {
   return {
+    trailingSlash: 'always',
     responseOverrides: { 404: { rewrite: '/404.html' } },
     globalHeaders: {
       'Content-Security-Policy': cspFor(themeScript),

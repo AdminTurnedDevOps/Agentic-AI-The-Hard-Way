@@ -14,6 +14,7 @@ describe('SWA config', () => {
   });
   it('sets security headers, 404 rewrite and Pagefind MIME types', () => {
     const config = buildSwaConfig(THEME_SCRIPT);
+    expect(config.trailingSlash).toBe('always');
     expect(config.globalHeaders['X-Content-Type-Options']).toBe('nosniff');
     expect(config.globalHeaders['Referrer-Policy']).toBe('strict-origin-when-cross-origin');
     expect(config.responseOverrides['404'].rewrite).toBe('/404.html');
