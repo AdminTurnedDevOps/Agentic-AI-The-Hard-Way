@@ -92,6 +92,12 @@ describe('parseReadmeNav: structure', () => {
     expect(n.sections.map((s) => s.title)).toEqual(['AI Workstation Setup']);
     expect(n.tracks.map((t) => t.title)).toEqual(['Alpha Track', 'Isolated Agents With kagent + Substrate', 'Isolated Environments', 'Beta Track']);
   });
+  it('treats prose with an inline link as text, not a before-you-start item', () => {
+    const md = `# T\n\nIntro.\n\n## Labs\n\n### A\n\nThese labs use any [supported provider](https://kagent.dev/x).\n\n1. [One](${R}/blob/main/a.md)\n`;
+    const track = parseReadmeNav(md, stubFs({ 'a.md': 'x' })).tracks[0];
+    expect(track.beforeYouStart).toEqual([]);
+    expect(track.blurb).toBe('These labs use any supported provider.');
+  });
   it('nests sub-items under their parent', () => {
     const laptop = nav().sections[0].items[0];
     expect(laptop.type).toBe('lab');
@@ -181,5 +187,6 @@ describe('the real README', () => {
     expect(n.tracks.length).toBeGreaterThan(0);
     expect(n.tracks.some((t) => flattenLabs(t).length > 0)).toBe(true);
     expect(n.startHere.items.length).toBeGreaterThan(0);
+    expect(n.tracks.flatMap((t) => t.beforeYouStart).some((i) => i.type === 'external')).toBe(false);
   });
 });

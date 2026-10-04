@@ -46,6 +46,13 @@ function linksIn(node: Node): Link[] {
   return found;
 }
 
+/** A paragraph made only of links, optionally labelled "prereq" (`**prereq**: [x](…)`), not prose with an inline link. */
+function isLinkParagraph(node: Paragraph, links: Link[]): boolean {
+  let rest = toString(node);
+  for (const link of links) rest = rest.replace(toString(link), '');
+  return rest.replace(/prereq/gi, '').replace(/[\s*:,.\-–—]/g, '') === '';
+}
+
 export function slugify(title: string): string {
   return title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 }
@@ -128,7 +135,7 @@ export function parseReadmeNav(markdown: string, fs: RepoFs): SiteNav {
       tracks.push(current);
     } else if (node.type === 'paragraph') {
       const links = linksIn(node);
-      if (links.length === 0) {
+      if (links.length === 0 || !isLinkParagraph(node, links)) {
         if (current.kind === 'track' && !fallbackBlurb.has(current)) fallbackBlurb.set(current, toString(node).trim());
         continue;
       }
