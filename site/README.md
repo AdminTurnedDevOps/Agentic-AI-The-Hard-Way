@@ -42,11 +42,14 @@ Run every command from `site/`. The build reads the repo root at `..`.
 3. Push to `main`. The `site` workflow builds, tests, and deploys. Same-repo PRs get preview URLs.
 4. One-time: in Squarespace Domains, go to **DNS → Domain Nameservers → Use Custom Nameservers**. Enter the four values from `terraform -chdir=infra output name_servers`. This turns off Squarespace DNSSEC. Propagation takes up to 48 hours, and apex validation up to 72.
 
+Both `agenticfieldguide.ai` and `www.agenticfieldguide.ai` are configured. The Free plan allows 2 custom domains and 3 preview (staging) environments per app. Close or merge stale PRs if previews stop deploying.
+
 Check progress:
 
 ```bash
 dig NS agenticfieldguide.ai +short
 az staticwebapp hostname show -n agentic-field-guide -g rg-agentic-field-guide --hostname agenticfieldguide.ai --query status
+az staticwebapp hostname show -n agentic-field-guide -g rg-agentic-field-guide --hostname www.agenticfieldguide.ai --query status
 curl -sI https://agenticfieldguide.ai | grep -i content-security-policy
 ```
 

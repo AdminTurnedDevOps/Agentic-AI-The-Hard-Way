@@ -53,6 +53,8 @@ resource "azurerm_dns_txt_record" "apex" {
   }
 
   # Azure clears the validation token once the domain validates; ignore it so later plans don't blank the record.
+  # Because `record` is ignored, changing the SPF value or txt_record_name after the first apply
+  # needs a manual edit of the record set (or `terraform apply -replace=azurerm_dns_txt_record.apex`).
   lifecycle {
     ignore_changes = [record]
   }
@@ -81,4 +83,20 @@ resource "azurerm_dns_a_record" "apex" {
   resource_group_name = azurerm_resource_group.site.name
   ttl                 = 3600
   target_resource_id  = azurerm_static_web_app.site.id
+}
+
+# www serves the same site; the Free plan allows 2 custom domains per app.
+resource "azurerm_dns_cname_record" "www" {
+  name                = "www"
+  zone_name           = azurerm_dns_zone.site.name
+  resource_group_name = azurerm_resource_group.site.name
+  ttl                 = 3600
+  record              = azurerm_static_web_app.site.default_host_name
+}
+
+resource "azurerm_static_web_app_custom_domain" "www" {
+  static_web_app_id = azurerm_static_web_app.site.id
+  domain_name       = "www.${azurerm_dns_zone.site.name}"
+  validation_type   = "cname-delegation"
+  depends_on        = [azurerm_dns_cname_record.www]
 }

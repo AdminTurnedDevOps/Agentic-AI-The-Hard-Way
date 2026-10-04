@@ -1,4 +1,5 @@
 SHELL := /bin/bash
+.SHELLFLAGS := -eu -o pipefail -c
 TF := terraform -chdir=infra
 REPO := AdminTurnedDevOps/Agentic-AI-The-Hard-Way
 
