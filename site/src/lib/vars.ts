@@ -1,6 +1,6 @@
 export type Token = { type: 'text'; value: string } | { type: 'var'; name: string; raw: string };
 
-const VAR_RE = /\$\{([A-Z][A-Z0-9_]*)\}|\$([A-Z][A-Z0-9_]*)/g;
+const VAR_RE = /\$\{([A-Z][A-Z0-9_]+)\}|\$([A-Z][A-Z0-9_]+)/g;
 const SECRET_RE = /KEY|TOKEN|SECRET|PASSWORD|CREDENTIAL/;
 
 export const SHELL_BUILTINS: ReadonlySet<string> = new Set(['HOME', 'PATH', 'USER', 'PWD', 'SHELL']);

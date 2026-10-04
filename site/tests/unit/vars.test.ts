@@ -30,6 +30,10 @@ describe('tokenize', () => {
     const text = 'a $X_Y b ${Z1} $HOME c';
     expect(tokenize(text).map((t) => (t.type === 'text' ? t.value : t.raw)).join('')).toBe(text);
   });
+  it('leaves single-letter names as text', () => {
+    const text = 'jq -r "$A" ${B}';
+    expect(tokenize(text)).toEqual([{ type: 'text', value: text }]);
+  });
 });
 
 describe('isSecret', () => {
@@ -52,6 +56,6 @@ describe('displayValue', () => {
 
 describe('varsInText', () => {
   it('lists unique names in order of first use', () => {
-    expect(varsInText('$B $A ${B} $HOME')).toEqual(['B', 'A']);
+    expect(varsInText('$BB $AA ${BB} $HOME')).toEqual(['BB', 'AA']);
   });
 });
