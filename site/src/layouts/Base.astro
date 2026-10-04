@@ -1,0 +1,57 @@
+---
+import '@fontsource/atkinson-hyperlegible/400.css';
+import '@fontsource/atkinson-hyperlegible/700.css';
+import '@fontsource/atkinson-hyperlegible/400-italic.css';
+import '@fontsource/ibm-plex-mono/400.css';
+import '../styles/global.css';
+import Search from '../components/Search.astro';
+import { THEME_SCRIPT } from '../lib/theme-script.mjs';
+import { SITE_DESCRIPTION, SITE_NAME } from '../lib/site';
+import { REPO_URL } from '../lib/routes';
+import { firstLabRoute } from '../lib/readme-nav';
+import { loadSiteNav } from '../lib/repo';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+const { title, description = SITE_DESCRIPTION } = Astro.props;
+const nav = loadSiteNav();
+const prereqItem = nav.startHere.items.find((i) => i.type === 'lab');
+const prereqHref = prereqItem && prereqItem.type === 'lab' ? prereqItem.route : null;
+const workstation = nav.sections.find((s) => /workstation/i.test(s.title));
+const workstationHref = workstation ? firstLabRoute(workstation) : null;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title ? `${title} | ${SITE_NAME}` : SITE_NAME}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script is:inline set:html={THEME_SCRIPT}></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <a class="wordmark" href="/">{SITE_NAME}</a>
+      <nav class="site-nav" aria-label="Site">
+        <a href="/#scenarios">Scenarios</a>
+        {prereqHref && <a href={prereqHref}>Prerequisites</a>}
+        {workstationHref && <a href={workstationHref}>Workstation</a>}
+        <a href={REPO_URL}>GitHub</a>
+      </nav>
+      <Search />
+      <button type="button" class="theme-toggle sk" data-theme-toggle aria-label="Dark mode">dark</button>
+    </header>
+    <main id="main"><slot /></main>
+    <footer class="site-footer">
+      <span>Content from <a href={REPO_URL}>Agentic-AI-The-Hard-Way</a> on GitHub.</span>
+      <span>Fonts: Excalifont, Atkinson Hyperlegible, IBM Plex Mono (<a href="/fonts/excalifont/OFL.txt">SIL OFL 1.1</a>).</span>
+    </footer>
+    <script>
+      import '../scripts/main.ts';
+    </script>
+  </body>
+</html>
