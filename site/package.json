@@ -1,0 +1,36 @@
+{
+  "name": "agentic-field-guide",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build && pagefind --site dist && node scripts/write-swa-config.mjs && node scripts/check-links.mjs",
+    "preview": "astro preview --port 4321",
+    "check": "astro check",
+    "test": "vitest run",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "@astrojs/markdown-remark": "7.3.1",
+    "@fontsource/atkinson-hyperlegible": "5.3.0",
+    "@fontsource/ibm-plex-mono": "5.3.0",
+    "astro": "7.3.5",
+    "mdast-util-to-string": "4.0.0",
+    "remark-parse": "11.0.0",
+    "roughjs": "4.6.6",
+    "unified": "11.0.5",
+    "unist-util-visit": "5.1.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.10",
+    "@playwright/test": "1.63.0",
+    "@types/mdast": "4.0.4",
+    "@types/node": "22.20.5",
+    "pagefind": "1.5.2",
+    "typescript": "6.0.3",
+    "vitest": "5.0.3"
+  }
+}

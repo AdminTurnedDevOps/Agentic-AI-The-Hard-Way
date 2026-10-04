@@ -4,13 +4,13 @@ As you're creating your AI workstation/workflows, there are a few things that yo
 
 Within both Claude and Codex, you'll see an option for `/plugins`.
 
-![](images/plugin1.png)
-![](images/plugin2.png)
+![Claude Code with /plug typed, suggesting the /plugin command](images/plugin1.png)
+![OpenAI Codex with /plu typed, suggesting the /plugins command](images/plugin2.png)
 
 Plugins are like specialized skills that you can use based on what you're trying to accomplish. For example, the **frontend-design** plugin is used a lot by designers and frontend engineers.
 
 
-![](images/plugin3.png)
+![Claude Code plugin browser listing frontend-design, superpowers, context7, code-review, and code-simplifier](images/plugin3.png)
 
 
 ## AGENTS.md or CLAUDE.md

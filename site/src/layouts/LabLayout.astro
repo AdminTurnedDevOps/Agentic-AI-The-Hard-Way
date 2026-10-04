@@ -1,0 +1,59 @@
+---
+import Base from './Base.astro';
+import NavList from '../components/NavList.astro';
+import type { LabItem, NavGroup } from '../lib/readme-nav';
+
+interface Props {
+  title: string;
+  route: string;
+  github: string;
+  group: NavGroup | null;
+  position: { index: number; total: number } | null;
+  prev: LabItem | null;
+  next: LabItem | null;
+}
+const { title, route, github, group, position, prev, next } = Astro.props;
+---
+<Base title={title}>
+  <div class="lab-layout">
+    <nav class="lab-side" aria-label={group ? `${group.title} labs` : 'Labs'}>
+      {group ? (
+        <details class="side-menu" open data-side-menu>
+          <summary>{group.title}</summary>
+          <p class:list={['side-title', 'sk', group.color && `fill-${group.color}`]}>{group.title}</p>
+          {group.beforeYouStart.length > 0 && (
+            <>
+              <p class="side-label">Before you start</p>
+              <NavList items={group.beforeYouStart} current={route} />
+            </>
+          )}
+          <NavList items={group.items} current={route} ordered />
+        </details>
+      ) : (
+        <p class="side-orphan">This page isn't in the README's lab list yet. <a href="/#scenarios">All scenarios</a></p>
+      )}
+    </nav>
+    <article class="lab-main" data-pagefind-body>
+      <header class="lab-head">
+        <h1 data-pagefind-meta="title">{title}</h1>
+        <div class="lab-meta" data-pagefind-ignore>
+          {group && <span>{group.title}{position && ` / lab ${position.index} of ${position.total}`}</span>}
+          <a href={github}>View on GitHub</a>
+        </div>
+      </header>
+      <div class="prose"><slot /></div>
+      <nav class="prev-next" aria-label="Previous and next lab" data-pagefind-ignore>
+        {prev ? <a class="sk" href={prev.route} rel="prev">← {prev.title}</a> : <span></span>}
+        {next ? <a class="sk-alt" href={next.route} rel="next">{next.title} →</a> : <span></span>}
+      </nav>
+    </article>
+    <aside class="lab-aside">
+      <section class="sticky-note" data-var-panel hidden aria-labelledby="var-title">
+        <h2 id="var-title">Your values</h2>
+        <p>Filled into every command on the site. Saved in this browser only.</p>
+        <div data-var-list></div>
+        <p class="var-hint">Leave blank to keep the <code>$VAR</code> as written. <a href="#" data-var-clear>Clear all</a></p>
+      </section>
+    </aside>
+  </div>
+</Base>

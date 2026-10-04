@@ -30,3 +30,12 @@ override.tf.json
 
 # Include tfplan files to ignore the plan output of command: terraform plan -out=tfplan
 # example: *tfplan*
+# Agentic Field Guide site
+.superpowers/
+site/node_modules/
+site/dist/
+site/.astro/
+site/test-results/
+site/playwright-report/
+site/infra/.terraform/
+site/infra/tfplan

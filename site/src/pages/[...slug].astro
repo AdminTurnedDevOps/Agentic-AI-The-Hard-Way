@@ -1,0 +1,62 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import LabLayout from '../layouts/LabLayout.astro';
+import ComingSoon from '../components/ComingSoon.astro';
+import { REPO_ROOT, folderDirs, folderFiles, loadSiteNav } from '../lib/repo';
+import { githubUrl, repoPathToRoute } from '../lib/routes';
+import { findGroupForRoute, flattenLabs } from '../lib/readme-nav';
+import { renderCodeBlock } from '../lib/code-html';
+import { pageTitle } from '../lib/titles';
+
+type PageProps = { kind: 'md'; entry: CollectionEntry<'pages'> } | { kind: 'dir'; dir: string };
+
+export async function getStaticPaths() {
+  const entries = await getCollection('pages');
+  const seen = new Map<string, string>();
+  const paths: Array<{ params: { slug: string }; props: PageProps }> = [];
+  const add = (route: string, source: string, props: PageProps) => {
+    const slug = route.slice(1, -1);
+    const clash = seen.get(slug);
+    if (clash) throw new Error(`route ${route} is produced by both ${clash} and ${source}`);
+    seen.set(slug, source);
+    paths.push({ params: { slug }, props });
+  };
+  for (const entry of entries) add(repoPathToRoute(`${entry.id}.md`, 'file'), `${entry.id}.md`, { kind: 'md', entry });
+  for (const dir of folderDirs(REPO_ROOT)) add(repoPathToRoute(dir, 'dir'), `${dir}/`, { kind: 'dir', dir });
+  return paths;
+}
+
+const props = Astro.props as PageProps;
+const kind = props.kind === 'md' ? 'file' : 'dir';
+const repoPath = props.kind === 'md' ? `${props.entry.id}.md` : props.dir;
+const route = repoPathToRoute(repoPath, kind);
+const found = findGroupForRoute(loadSiteNav(), route);
+const body = props.kind === 'md' ? props.entry.body ?? '' : '';
+const title = pageTitle(found?.item.title ?? null, body, repoPath);
+const labs = found ? flattenLabs(found.group) : [];
+const index = labs.findIndex((l) => l.route === route);
+
+const isEmpty = props.kind === 'md' && !body.trim();
+const Content = props.kind === 'md' && !isEmpty ? (await render(props.entry)).Content : null;
+const folder = props.kind === 'dir' ? folderFiles(REPO_ROOT, props.dir) : null;
+const folderEntries = folder
+  ? (await getCollection('pages', (e) => folder.md.includes(`${e.id}.md`))).sort(
+      (a, b) => folder.md.indexOf(`${a.id}.md`) - folder.md.indexOf(`${b.id}.md`),
+    )
+  : [];
+const folderContents = await Promise.all(folderEntries.map(async (e) => (await render(e)).Content));
+---
+<LabLayout
+  title={title}
+  route={route}
+  github={githubUrl(repoPath, kind)}
+  group={found?.group ?? null}
+  position={index >= 0 ? { index: index + 1, total: labs.length } : null}
+  prev={index > 0 ? labs[index - 1] : null}
+  next={index >= 0 && index < labs.length - 1 ? labs[index + 1] : null}
+>
+  {isEmpty && <ComingSoon />}
+  {Content && <Content />}
+  {folderContents.map((FolderContent) => <FolderContent />)}
+  {folder?.code.map((file) => <Fragment set:html={renderCodeBlock(file.text, file.lang, file.name)} />)}
+</LabLayout>

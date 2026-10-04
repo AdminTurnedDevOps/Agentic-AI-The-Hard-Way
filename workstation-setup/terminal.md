@@ -15,5 +15,5 @@ Top tools right now in the terminal space:
 1. VS Code
 2. cmux
 
-![](images/cmux1.png)
-![](images/cmux2.png)
+![cmux with project tabs for kagent, agentregistry, and agentgateway in the sidebar and a terminal open](images/cmux1.png)
+![cmux with a browser tab open to a LangChain blog post next to the project sidebar](images/cmux2.png)

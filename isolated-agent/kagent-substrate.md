@@ -83,4 +83,4 @@ spec:
 EOF
 ```
 
-You can see more configurations and options ![here](https://kagent.dev/docs/kagent/1.x/agents/agent-harness/)
+You can see more configurations and options [here](https://kagent.dev/docs/kagent/1.x/agents/agent-harness/)

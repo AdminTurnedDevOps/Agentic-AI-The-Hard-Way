@@ -1,0 +1,29 @@
+---
+import type { NavItem } from '../lib/readme-nav';
+
+interface Props {
+  items: NavItem[];
+  current?: string;
+  ordered?: boolean;
+  compact?: boolean;
+}
+const { items, current, ordered = false, compact = false } = Astro.props;
+const Tag = ordered ? 'ol' : 'ul';
+const notesOf = (item: NavItem): string[] => ('notes' in item ? item.notes : []);
+---
+<Tag class:list={['nav-list', { compact }]}>
+  {items.map((item) => (
+    <li class={`nav-${item.type}`} title={!compact && notesOf(item).length ? notesOf(item).join(' ') : undefined}>
+      {item.type === 'lab' && (
+        <a href={item.route} class:list={{ 'is-soon': item.comingSoon }} aria-current={item.route === current ? 'page' : undefined}>
+          {item.title}{item.comingSoon && <span class="soon-tag"> (coming soon)</span>}
+        </a>
+      )}
+      {item.type === 'soon' && <span class="is-soon">{item.title} <span class="soon-tag">(coming soon)</span></span>}
+      {item.type === 'external' && <a href={item.url} rel="noopener">{item.title} ↗</a>}
+      {item.type === 'group' && <span class="nav-group-title">{item.title}</span>}
+      {compact && notesOf(item).map((note) => <p class="nav-note">{note}</p>)}
+      {item.children.length > 0 && <Astro.self items={item.children} current={current} compact={compact} />}
+    </li>
+  ))}
+</Tag>

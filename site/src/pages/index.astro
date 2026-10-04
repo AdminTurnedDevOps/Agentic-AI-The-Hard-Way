@@ -1,0 +1,44 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import NavList from '../components/NavList.astro';
+import TrackBox from '../components/TrackBox.astro';
+import banner from '../../../images/banner.png';
+import { loadSiteNav } from '../lib/repo';
+import { BANNER_ALT, HERO_HEADING } from '../lib/site';
+
+const nav = loadSiteNav();
+const sections = nav.sections.filter((s) => s.items.length > 0);
+---
+<Base>
+  <section class="hero">
+    <div>
+      <h1>{HERO_HEADING}</h1>
+      <p>{nav.intro}</p>
+    </div>
+    <Image src={banner} alt={BANNER_ALT} class="hero-banner" widths={[640, 1024]} sizes="(max-width: 1000px) 100vw, 55vw" loading="eager" />
+  </section>
+
+  <section class="scenarios" id="scenarios" aria-labelledby="scenarios-title">
+    <h2 id="scenarios-title">Pick a scenario</h2>
+    <div class="flow">
+      <div class="start sk">
+        <h3>Start here</h3>
+        <NavList items={nav.startHere.items} />
+      </div>
+      <svg class="flow-arrow" data-rough-arrow viewBox="0 0 60 40" aria-hidden="true" focusable="false">
+        <text x="30" y="27" text-anchor="middle">→</text>
+      </svg>
+      <div class="tracks">
+        {nav.tracks.map((track) => <TrackBox track={track} />)}
+      </div>
+    </div>
+  </section>
+
+  {sections.map((section) => (
+    <section class="workstation" aria-labelledby={`sec-${section.slug}`}>
+      <h2 id={`sec-${section.slug}`}>{section.title}</h2>
+      <NavList items={section.items} ordered compact />
+    </section>
+  ))}
+</Base>
