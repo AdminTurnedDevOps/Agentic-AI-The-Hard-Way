@@ -1,8 +1,10 @@
 import path from 'node:path';
 import { defineConfig } from 'astro/config';
+import { unified } from '@astrojs/markdown-remark';
 import { remarkRepoLinks } from './src/plugins/remark-repo-links.ts';
 import { remarkCodeVars } from './src/plugins/remark-code-vars.ts';
 import { remarkDemoteH1 } from './src/plugins/remark-demote-h1.ts';
+import { contentReport } from './src/integrations/content-report.ts';
 
 const REPO_ROOT = path.resolve(process.cwd(), '..');
 
@@ -12,8 +14,11 @@ export default defineConfig({
   build: { format: 'directory', inlineStylesheets: 'never' },
   markdown: {
     syntaxHighlight: false,
-    remarkPlugins: [[remarkRepoLinks, { repoRoot: REPO_ROOT }], remarkCodeVars, remarkDemoteH1],
+    processor: unified({
+      remarkPlugins: [[remarkRepoLinks, { repoRoot: REPO_ROOT }], remarkCodeVars, remarkDemoteH1],
+    }),
   },
+  integrations: [contentReport({ repoRoot: REPO_ROOT })],
   vite: {
     // Keep every processed <script> as an external file so the CSP needs no 'unsafe-inline'.
     build: { assetsInlineLimit: 0 },
