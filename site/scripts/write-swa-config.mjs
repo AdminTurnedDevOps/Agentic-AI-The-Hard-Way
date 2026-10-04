@@ -23,7 +23,8 @@ export function cspFor(themeScript) {
 
 export function buildSwaConfig(themeScript) {
   return {
-    trailingSlash: 'always',
+    // No `trailingSlash`: SWA's "always" also redirects files (/x.css → /x.css/), breaking every asset.
+    // The default serves both /lab and /lab/, and every link the site generates already ends in "/".
     responseOverrides: { 404: { rewrite: '/404.html' } },
     globalHeaders: {
       'Content-Security-Policy': cspFor(themeScript),
