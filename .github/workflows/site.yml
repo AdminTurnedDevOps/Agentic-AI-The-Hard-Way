@@ -28,7 +28,9 @@ permissions:
   contents: read
 
 concurrency:
-  group: site-${{ github.ref }}
+  # A merged PR's "closed" event reports github.ref as the base branch, so keying on github.ref alone
+  # put it in the same group as the push to main and cancelled the production deploy.
+  group: site-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
