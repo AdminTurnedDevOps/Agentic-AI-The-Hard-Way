@@ -5,7 +5,7 @@ variable "subscription_id" {
 
 variable "resource_group_name" {
   type    = string
-  default = "rg-agentic-field-guide"
+  default = "agenticfieldguide"
 }
 
 variable "location" {
