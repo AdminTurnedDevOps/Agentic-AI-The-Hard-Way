@@ -24,6 +24,11 @@ Terraform in `site/infra/` creates the Static Web App, the Azure DNS zone, and t
 
 **Spec:** `docs/superpowers/specs/2026-10-04-agentic-field-guide-site-design.md`
 
+**Deviations from the spec (deliberate, small):**
+1. The CSP `script-src` adds `'wasm-unsafe-eval'`, because Pagefind runs as WebAssembly (Task 12).
+2. Terraform checks live in a separate workflow, `site-infra.yml` (Task 15).
+3. Rough.js draws only the home-page flow arrow. Box outlines use the CSS irregular `border-radius` that the spec already uses for static boxes, which works without JavaScript (Tasks 8 and 11).
+
 ## Global Constraints
 
 **Toolchain and versions**
@@ -121,7 +126,12 @@ site/
 **Interfaces:**
 - Produces: repo markdown with no image syntax used for links, alt text on all 8 images, and the README site line. That line is a paragraph containing a link, which Task 5's intro rule skips.
 
-The author edits these files often. Replace by **exact string**, not line number. `isolated-agent/installation.md` has uncommitted author edits; keep them and change only the `![Agent Substrate]` text.
+The author edits these files often. Replace by **exact string**, not line number.
+
+- [ ] **Step 0: Make sure the author's own edits are committed first**
+
+Run: `git status --short -- README.md platform-engineering-assistant isolated-agent workstation-setup .gitignore`
+Expected: no output. If any file is listed (for example ` M isolated-agent/installation.md`), **stop and ask the author to commit their edits**. This task's commit must contain only the edits below.
 
 - [ ] **Step 1: Apply the string replacements**
 
@@ -3936,22 +3946,19 @@ make infra-apply
 terraform -chdir=infra output name_servers
 ```
 
-If `azurerm_dns_a_record.apex` fails because Azure DNS rejects a Static Web App as an alias target, stop and tell the author. The spec's fallback replaces that resource with the block below and adds `www` as the main hostname. Apply it only after the author approves:
+Azure's apex guide for Azure DNS says the portal creates "TXT and ALIAS records" automatically, so an alias A record to a Static Web App is expected to work.
+
+If `azurerm_dns_a_record.apex` still fails because Azure DNS rejects the alias target, stop and tell the author. The fallback, applied only with the author's approval:
+1. Read `stableInboundIP` from the Static Web App's **Overview → JSON View** in the portal (per Microsoft's apex guide).
+2. Change the apex record to point at that IP instead of the resource. The apex keeps working, but traffic goes to one regional host instead of using global distribution (spec section 7):
 
 ```hcl
-resource "azurerm_dns_cname_record" "www" {
-  name                = "www"
+resource "azurerm_dns_a_record" "apex" {
+  name                = "@"
   zone_name           = azurerm_dns_zone.site.name
   resource_group_name = azurerm_resource_group.site.name
   ttl                 = 3600
-  record              = azurerm_static_web_app.site.default_host_name
-}
-
-resource "azurerm_static_web_app_custom_domain" "www" {
-  static_web_app_id = azurerm_static_web_app.site.id
-  domain_name       = "www.${azurerm_dns_zone.site.name}"
-  validation_type   = "cname-delegation"
-  depends_on        = [azurerm_dns_cname_record.www]
+  records             = ["<stableInboundIP from the portal>"] # replaces target_resource_id
 }
 ```
 
@@ -4013,4 +4020,5 @@ Expected:
 - The hostname status is `Ready`.
 - `HTTP/2 200` with the CSP header.
 
-If the status stays `Validating` more than 24 hours after `dig` shows Azure nameservers, switch `txt_record_name` to `_dnsauth` (with the author's approval) and re-apply.
+- If the status is `Failed`: the custom domain was created days before the nameservers moved, and validation may have timed out. With the author's approval, re-create it after `dig` shows Azure nameservers: `TF_VAR_subscription_id="$(az account show --query id -o tsv)" terraform -chdir=site/infra apply -replace=azurerm_static_web_app_custom_domain.apex`.
+- If the status stays `Validating` more than 24 hours after `dig` shows Azure nameservers: switch `txt_record_name` to `_dnsauth` (with the author's approval) and re-apply.
