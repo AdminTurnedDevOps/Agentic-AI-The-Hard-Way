@@ -6,10 +6,10 @@ import { initSideMenu } from './side-menu';
 import { initTrackMap } from './track-map';
 import { initSearch } from './search';
 
-initThemeToggle();
-initVarPanel();
-initCopyButtons();
-initImageLinks();
-initSideMenu();
-initTrackMap();
-initSearch();
+for (const init of [initThemeToggle, initVarPanel, initCopyButtons, initImageLinks, initSideMenu, initTrackMap, initSearch]) {
+  try {
+    init();
+  } catch (error) {
+    console.error('Agentic Field Guide: a page script failed to start', error);
+  }
+}

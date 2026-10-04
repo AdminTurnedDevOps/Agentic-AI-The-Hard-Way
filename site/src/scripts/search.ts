@@ -49,13 +49,13 @@ export function initSearch(): void {
 
   input.addEventListener('input', () => {
     window.clearTimeout(timer);
+    const mine = ++sequence;
     const term = input.value.trim();
     if (!term) {
       show([]);
       return;
     }
     timer = window.setTimeout(async () => {
-      const mine = ++sequence;
       if (import.meta.env.DEV) {
         message('Search works after a build: npm run build && npm run preview');
         return;
