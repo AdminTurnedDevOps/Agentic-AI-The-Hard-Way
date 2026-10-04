@@ -13,3 +13,5 @@ helm upgrade -i --create-namespace \
 helm upgrade -i -n agentgateway-system agentgateway oci://cr.agentgateway.dev/charts/agentgateway \
 --version v1.6.0
 ```
+
+Check the latest version of agw ![here](https://agentgateway.dev/docs/kubernetes/latest/documentation/install/helm/)
