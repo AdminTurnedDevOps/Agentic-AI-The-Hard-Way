@@ -1,6 +1,6 @@
 The below installs both kagent and Agent Substrate.
 
-**please note**: ![Agent Substrate](https://github.com/agent-substrate/substrate) is a fast-moving project. Expect changes, upgrades, and object implementations that are net new.
+**please note**: [Agent Substrate](https://github.com/agent-substrate/substrate) is a fast-moving project. Expect changes, upgrades, and object implementations that are net new.
 
 ## Prerequisites
 

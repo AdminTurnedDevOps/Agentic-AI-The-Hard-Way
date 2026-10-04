@@ -178,11 +178,11 @@ EOF
 
 4. Run the Agent.
 
-![](../images/run-llama-agent.png)
+![kagent chat with the Llama-backed agent answering "what is k8s"](../images/run-llama-agent.png)
 
 ```
 kubectl logs -n agentgateway-system agentgateway-llama-788bd59b5d-nbth5 --tail=50
 ```
 
 You should see an output similar to the below:
-![](../images/llama-agw-log.png)
+![agentgateway log line for the Llama request: route agentgateway-system/llama, status 200, and token usage](../images/llama-agw-log.png)
