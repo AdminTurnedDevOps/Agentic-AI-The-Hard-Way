@@ -32,7 +32,7 @@ The Observer helps in all things monitoring and observability to help you figure
 
 The autonomous k8s engineer takes autonomy to a whole other level. It can figure out what is going on, fix the issue, deploy what is needed, and ensure the environment is running smooth all without you having to even know about it.
 
-### Isolated Agent
+### Isolated Agent With kagent + Agent Substrate
 
 Sandboxes are something that many organizations have implemented for workloads. The goal is whatever is running is the sandbox is isolated from everything EXCEPT what it needs to perform its action. No access to the outside world, files/folders, projects, teams, cloud providers, etc... In the world of Agentic AI, we're now seeing the idea around Agent Sandboxes pop up as well for the same thing - isolation, except for Agent runs.
 

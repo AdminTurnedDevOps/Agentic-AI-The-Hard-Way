@@ -1,5 +1,7 @@
 The below installs both kagent and Agent Substrate.
 
+**please note**: ![Agent Substrate]() is a fast-moving project. Expect changes, upgrades, and object implementations that are net new.
+
 ### Substrate
 
 ```bash
