@@ -45,8 +45,10 @@ resource "azurerm_dns_txt_record" "apex" {
     value = "v=spf1 -all"
   }
 
+  # compact() drops the token once Azure has validated the domain and cleared it to "",
+  # because the provider rejects an empty TXT value even when `record` changes are ignored.
   dynamic "record" {
-    for_each = local.validation_at_apex ? [azurerm_static_web_app_custom_domain.apex.validation_token] : []
+    for_each = local.validation_at_apex ? compact([azurerm_static_web_app_custom_domain.apex.validation_token]) : []
     content {
       value = record.value
     }
@@ -67,8 +69,10 @@ resource "azurerm_dns_txt_record" "validation" {
   resource_group_name = azurerm_resource_group.site.name
   ttl                 = 3600
 
+  # The token is cleared to "" after validation; the placeholder keeps later plans valid
+  # (ignore_changes means Azure keeps the real token value that was written at creation).
   record {
-    value = azurerm_static_web_app_custom_domain.apex.validation_token
+    value = coalesce(azurerm_static_web_app_custom_domain.apex.validation_token, "validated")
   }
 
   lifecycle {
