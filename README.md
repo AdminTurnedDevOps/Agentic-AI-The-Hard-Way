@@ -111,7 +111,7 @@ These labs will use Llama for the LLM, Kubernetes for the Agent runtime, and a b
 8. [Implementing Agent Registry for Shadow AI]()
 9. [Researcher Agent + Agent Evals For Platform Engineering Tasks](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/platform-engineering-assistant/platform-assistant-agent-evals.md)
 
-### Isolated Agents
+### Isolated Agents With kagent + Agent substrate
 
 Agent Sandboxing and isolation has come a far away, and it's especially important after finding out just how "sneaky" an Agent can be (e.g, the OpenAI/Hugging Face breakout). Organizations small and large are implementing solutions to ensure Agents can, and should, only do what they're supposed to be able to do. The other reality is what is actually isolated (agent calls to LLMs, MCP Servers, other Agents, etc.), which also needs to be accounted for.
 
@@ -120,6 +120,10 @@ This section goes over using kagent + Agent Substrate, which is the way to perfo
 [prereq - learn Substrate](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent/learn-substrate.md)
 1. [Install Sandbox](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent/installation.md)
 2. [Using Kagent Substrate](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent/kagent-substrate.md)
+
+### Isolated Environments With Agent Substrate
+
+WIP
 
 ### The Observer
 
