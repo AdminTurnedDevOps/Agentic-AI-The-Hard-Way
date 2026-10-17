@@ -262,7 +262,3 @@ hack/install-ate-kind.sh --delete-demo-autoscaled-workerpool
 ```
 
 The demo's delete step removes its own Actors and template, the atespace, the HPA, `prometheus-adapter`, the pool, and the namespace.
-
-## Next
-
-[More Actors than Pods](multiplexing.md).

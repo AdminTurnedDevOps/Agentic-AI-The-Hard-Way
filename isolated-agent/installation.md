@@ -390,7 +390,3 @@ kubectl delete namespace kagent ate-system podcertificate-controller-system
 | `controller.grpc.reflection` | `config.server.grpcReflection` |
 | `substrateWorkerPool.workerImage` `v0.3.0-alpha3` | `substrateWorkerPool.workerImage` `v0.5.0-alpha2`, set by the CLI |
 | `helm upgrade --reuse-values --set substrateWorkerPool.replicas=3` | `kubectl scale workerpool`, or a values file passed to `kagent install` |
-
-## Next
-
-Create an Agent that runs on Substrate: [Using kagent with Substrate](kagent-substrate.md).

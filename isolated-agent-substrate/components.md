@@ -1,3 +1,9 @@
+The interactive map below shows every component in this list, numbered to match. Press **Play** to watch a request wake an Actor, its state go to a snapshot, and the Actor resume on a different worker. Click any component on the map to read what it does. The map runs on [agenticfieldguide.ai](https://agenticfieldguide.ai/isolated-agent-substrate/components/); GitHub shows only this text.
+
+<link rel="stylesheet" href="/diagrams/substrate/diagram.css">
+<div id="substrate-diagram" data-pagefind-ignore></div>
+<script type="module" src="/diagrams/substrate/diagram.js"></script>
+
 1. Ate-api-server: The control plane. It owns each Actor's lifecycle (create, suspend, resume), places Actors onto Workers, and coordinates snapshots, all backed by the state store. It checks every request against an OpenFGA authorization model.
 
 2. atenet/atenet-router: atenet is the networking binary. atenet-router is its ingress piece: it reads the ate-target-actor: <atespace>/<actor> header, asks the control plane to resume that Actor if it's suspended, and opens an mTLS tunnel to the right worker pod. It can use agentgateway or Envoy as the proxy you can choose from to carry the actual traffic for both ingress router and egress gateway.

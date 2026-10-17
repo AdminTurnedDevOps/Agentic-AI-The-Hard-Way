@@ -312,7 +312,3 @@ kubectl delete namespace ate-packing
 ```
 
 Deleting the namespace deletes the WorkerPool and its worker Pods.
-
-## Next
-
-[Observe Substrate](observability.md).

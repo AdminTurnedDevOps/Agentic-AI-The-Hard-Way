@@ -248,7 +248,3 @@ Keep the counter demo for the next labs. To remove it later:
 ```bash
 hack/install-ate-kind.sh --delete-demo-counter
 ```
-
-## Next
-
-[Atespaces and the teleporting Actor](multi-tenancy-teleport.md).

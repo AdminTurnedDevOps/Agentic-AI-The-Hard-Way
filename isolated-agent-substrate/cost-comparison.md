@@ -201,7 +201,3 @@ done
 kubectl ate delete atespace "${ATESPACE}"
 rm -f baseline.tsv substrate.tsv
 ```
-
-## Next
-
-[MicroVM Pod isolation without Substrate (Kata)](kata-pod-isolation.md).

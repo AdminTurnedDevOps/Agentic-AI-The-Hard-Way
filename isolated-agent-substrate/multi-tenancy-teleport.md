@@ -149,7 +149,3 @@ kubectl ate delete actor agent-1 -a tenant-b
 kubectl ate delete atespace tenant-a
 kubectl ate delete atespace tenant-b
 ```
-
-## Next
-
-[Hardware isolation with micro-VMs](microvm.md).

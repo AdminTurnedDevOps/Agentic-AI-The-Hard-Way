@@ -153,7 +153,3 @@ hack/install-ate-kind.sh --delete-demo-claude-code-multiplex
 ```
 
 `--any-state` deletes an Actor from any state (for example `RUNNING`), tearing down its workload. Deleting the Claude demo removes its Actors, templates, atespace, and namespace.
-
-## Next
-
-[Workers Hosting Several Actors](worker-packing.md).

@@ -125,7 +125,3 @@ NO_DEV_ENV=true KUBECTL_CONTEXT=kind-substrate hack/install-microvm-deps.sh --de
 ```
 
 `--delete` removes the `microvm` SandboxConfig. It leaves the config in place while any WorkerPool still uses it, and it leaves the assets in the bucket.
-
-## Next
-
-[Request parking and WorkerPool autoscaling](parking-autoscaling.md).

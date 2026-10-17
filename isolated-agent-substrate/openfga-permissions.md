@@ -306,7 +306,3 @@ kubectl ate delete atespace openfga-lab
 ```
 
 `auth.yaml` also creates a cluster-scoped ClusterRole and ClusterRoleBinding (`openfga-actors-token-review`), so delete it with `kubectl delete -f` rather than only deleting the namespace.
-
-## Next
-
-[Cost: Actors vs always-on Deployments](cost-comparison.md).

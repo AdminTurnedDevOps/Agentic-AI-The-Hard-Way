@@ -1,0 +1,203 @@
+/* Agent Substrate components diagram. Everything is scoped to #substrate-diagram. */
+@font-face{font-family:'DM Mono';font-style:normal;font-weight:400;font-display:swap;src:url('fonts/dm-mono-400.woff2') format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
+@font-face{font-family:'DM Mono';font-style:normal;font-weight:500;font-display:swap;src:url('fonts/dm-mono-500.woff2') format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
+@font-face{font-family:'DM Sans';font-style:normal;font-weight:400 500;font-display:swap;src:url('fonts/dm-sans.woff2') format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
+@font-face{font-family:'Figtree';font-style:normal;font-weight:400 600;font-display:swap;src:url('fonts/figtree.woff2') format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
+#substrate-diagram{--bg-0:#0B0E18; --bg-card:#11141F; --bg-raise:#161A28; --fg-1:#FFFFFF; --fg-2:#C8CCDB; --fg-3:#8289A3; --fg-4:#5A6078;
+  --purple:#8A3FFC; --lilac:#B79CFF; --blue:#20B7F3; --green:#2FD4A7; --amber:#F2B84B; --red:#FF6B7A;
+  --line:rgba(255,255,255,.12); --line-soft:rgba(255,255,255,.08); --chip:rgba(255,255,255,.14);
+  --f-head:'Figtree',ui-sans-serif,system-ui,sans-serif;
+  --f-body:'DM Sans',ui-sans-serif,system-ui,sans-serif;
+  --f-mono:'DM Mono',ui-monospace,'SF Mono',Menlo,monospace;}
+#substrate-diagram *{box-sizing:border-box;margin:0;padding:0}
+#substrate-diagram button{font:inherit;color:inherit}
+@keyframes sd-march{to{stroke-dashoffset:-28}}
+@keyframes sd-pop{0%{transform:scale(.6);opacity:0}100%{transform:none;opacity:1}}
+@keyframes sd-slide{from{transform:translateY(-4px);opacity:.3}to{transform:none;opacity:1}}
+#substrate-diagram ::-webkit-scrollbar{width:9px;height:9px}
+#substrate-diagram ::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14);border-radius:9px}
+#substrate-diagram :focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+#substrate-diagram .eyebrow{font:400 13px var(--f-mono);letter-spacing:.06em;color:var(--purple)}
+#substrate-diagram .eyebrow b{font-weight:400;color:var(--fg-4);margin:0 .5em}
+#substrate-diagram .controls{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin:20px 0 12px}
+#substrate-diagram .btn{font:400 12px var(--f-mono);letter-spacing:.04em;color:var(--fg-2);background:rgba(255,255,255,.03);border:1px solid var(--line);
+  border-radius:999px;padding:8px 15px;cursor:pointer}
+#substrate-diagram .btn:hover{background:rgba(255,255,255,.07)}
+#substrate-diagram .btn.play{background:var(--purple);border-color:var(--lilac);color:#fff;min-width:7.5em}
+#substrate-diagram .seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+#substrate-diagram .seg button{font:400 12px var(--f-mono);background:transparent;border:0;padding:8px 12px;color:var(--fg-3);cursor:pointer}
+#substrate-diagram .seg button+button{border-left:1px solid var(--line)}
+#substrate-diagram .seg button[aria-pressed="true"]{background:rgba(138,63,252,.28);color:#fff}
+#substrate-diagram .auto{display:inline-flex;align-items:center;gap:7px;font:400 12px var(--f-mono);color:var(--fg-3);cursor:pointer}
+#substrate-diagram .auto input{width:15px;height:15px;accent-color:var(--purple)}
+#substrate-diagram .rail{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:6px;margin-bottom:18px}
+#substrate-diagram .scene{position:relative;display:grid;gap:3px;text-align:left;padding:8px 10px 10px;border-radius:10px;border:1px solid var(--line);
+  background:rgba(255,255,255,.02);cursor:pointer;overflow:hidden;min-width:0}
+#substrate-diagram .scene .n{font:400 11px var(--f-mono);color:var(--fg-4)}
+#substrate-diagram .scene b{font:500 13px/1.2 var(--f-head);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#substrate-diagram .scene .bar{position:absolute;left:0;bottom:0;height:3px;width:var(--p,0%);background:var(--lilac);transition:width .15s linear}
+#substrate-diagram .scene[aria-current="step"]{border-color:rgba(183,156,255,.6);background:rgba(138,63,252,.1)}
+#substrate-diagram .scene[aria-current="step"] .n{color:var(--lilac)}
+#substrate-diagram .scene.done .n{color:var(--green)}
+#substrate-diagram .scene.done .bar{background:var(--green)}
+#substrate-diagram .legend{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 22px}
+#substrate-diagram .legend span{display:inline-flex;align-items:center;gap:8px;font:400 11.5px var(--f-mono);letter-spacing:.04em;color:var(--fg-2);
+  padding:6px 12px;border:1px solid var(--line);border-radius:999px}
+#substrate-diagram .legend i{display:inline-block;width:18px;height:0;border-top:2px solid var(--lilac)}
+#substrate-diagram .legend i.dash{border-top-style:dashed}
+#substrate-diagram .legend i.snap{border-color:var(--blue)}
+#substrate-diagram .legend i.egr{border-color:var(--amber)}
+#substrate-diagram .legend i.deny{border-color:var(--red)}
+#substrate-diagram .legend i.num{width:auto;height:auto;border:1px solid rgba(255,255,255,.3);border-radius:50%;font:400 9.5px/16px var(--f-mono);
+  width:18px;text-align:center;color:var(--fg-2)}
+#substrate-diagram .stage{position:relative;width:100%}
+#substrate-diagram #sd-canvas{position:absolute;left:0;top:0;width:1320px;height:1010px;transform-origin:0 0}
+#substrate-diagram .frame{position:absolute;border:1px dashed var(--line);border-radius:18px;transition:border-color .25s,box-shadow .25s,opacity .25s}
+#substrate-diagram .frame.cluster{border-color:rgba(138,63,252,.55)}
+#substrate-diagram .frame.ns{border-color:rgba(138,63,252,.28);background:rgba(138,63,252,.035);border-radius:16px}
+#substrate-diagram .frame.ext{border-color:rgba(255,255,255,.2);border-radius:16px}
+#substrate-diagram .frame.group{border-color:rgba(138,63,252,.45);background:rgba(138,63,252,.05);border-radius:16px}
+#substrate-diagram .frame.nodes{border-color:rgba(32,183,243,.28);background:rgba(32,183,243,.025);border-radius:16px}
+#substrate-diagram .frame.on{border-color:var(--lilac);box-shadow:0 0 0 1px rgba(183,156,255,.15),0 0 40px -12px rgba(138,63,252,.6)}
+#substrate-diagram .frame>.flabel{position:absolute;top:-11px;font:400 10.5px/1 var(--f-mono);letter-spacing:.08em;color:var(--fg-2);white-space:nowrap;
+  padding:5px 10px;background:var(--bg-0);border:1px solid var(--line);border-radius:999px;display:inline-flex;gap:6px;align-items:center}
+#substrate-diagram .frame.cluster>.flabel,#substrate-diagram .frame.group>.flabel,#substrate-diagram .frame.ns>.flabel{color:var(--lilac);border-color:rgba(138,63,252,.4)}
+#substrate-diagram .frame.nodes>.flabel{color:#8fd8f5;border-color:rgba(32,183,243,.35)}
+#substrate-diagram .frame>.flabel[data-c]{cursor:pointer}
+#substrate-diagram svg.layer{position:absolute;inset:0;overflow:visible;pointer-events:none}
+#substrate-diagram #sd-wires{z-index:1}
+#substrate-diagram #sd-packets{z-index:6}
+#substrate-diagram #sd-wires path{fill:none;stroke-linejoin:round;transition:stroke .25s,opacity .25s,stroke-width .25s}
+#substrate-diagram #sd-wires path.halo{stroke:var(--bg-0);stroke-width:7}
+#substrate-diagram #sd-wires path.w{stroke-width:1.3}
+#substrate-diagram #sd-wires path.w.run,#substrate-diagram #sd-wires path.w.ctl{stroke:rgba(255,255,255,.26)}
+#substrate-diagram #sd-wires path.w.prov{stroke:rgba(255,255,255,.26);stroke-dasharray:6 5}
+#substrate-diagram #sd-wires path.w.snap{stroke:rgba(32,183,243,.42)}
+#substrate-diagram #sd-wires path.w.egress{stroke:rgba(242,184,75,.42)}
+#substrate-diagram #sd-wires path.w.on{stroke-width:2;stroke-dasharray:8 6;animation:sd-march .9s linear infinite}
+#substrate-diagram #sd-wires path.w.run.on,#substrate-diagram #sd-wires path.w.ctl.on,#substrate-diagram #sd-wires path.w.prov.on{stroke:var(--lilac)}
+#substrate-diagram #sd-wires path.w.snap.on{stroke:var(--blue)}
+#substrate-diagram #sd-wires path.w.egress.on{stroke:var(--amber)}
+#substrate-diagram #sd-wires path.w.deny.on,#substrate-diagram #sd-wires path.w.on.deny{stroke:var(--red)}
+#substrate-diagram #sd-wires path.dim{opacity:.16}
+#substrate-diagram .node{position:absolute;display:flex;gap:12px;align-items:flex-start;padding:13px 14px;border-radius:14px;background:var(--bg-card);
+  border:1px solid var(--line);z-index:3;transition:opacity .25s,border-color .25s,box-shadow .25s;cursor:pointer}
+#substrate-diagram .node .ico{width:34px;height:34px;flex:0 0 34px;border-radius:9px;display:grid;place-items:center;background:rgba(138,63,252,.12);
+  border:1px solid rgba(138,63,252,.3);color:var(--lilac);transition:.25s}
+#substrate-diagram .node .ico svg{width:18px;height:18px}
+#substrate-diagram .node .txt{display:flex;flex-direction:column;gap:5px;min-width:0;flex:1}
+#substrate-diagram .node .t{font:500 15px/1.15 var(--f-head);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#substrate-diagram .node .s{font-size:12px;line-height:1.3;color:var(--fg-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#substrate-diagram .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
+#substrate-diagram .chip{font:400 10.5px/1.3 var(--f-mono);color:#9AA0B5;padding:3px 7px;border:1px solid var(--chip);border-radius:6px;background:rgba(255,255,255,.03);white-space:nowrap}
+#substrate-diagram .chip.good{color:#8ff0d2;border-color:rgba(47,212,167,.4);background:rgba(47,212,167,.08)}
+#substrate-diagram .chip.snapc{color:#8fd8f5;border-color:rgba(32,183,243,.4);background:rgba(32,183,243,.08)}
+#substrate-diagram .chip.warn{color:#f6d38a;border-color:rgba(242,184,75,.4);background:rgba(242,184,75,.08)}
+#substrate-diagram .cnum{position:absolute;top:-9px;right:-9px;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;
+  font:400 10px var(--f-mono);color:var(--fg-2);background:var(--bg-0);border:1px solid rgba(255,255,255,.3);z-index:4}
+#substrate-diagram .node.on{border-color:var(--lilac);box-shadow:0 0 0 1px rgba(183,156,255,.25),0 0 34px -8px rgba(138,63,252,.7)}
+#substrate-diagram .node.on .ico{background:rgba(138,63,252,.28);color:#fff;border-color:var(--lilac)}
+#substrate-diagram .node.on .cnum{background:var(--purple);border-color:var(--lilac);color:#fff}
+#substrate-diagram .node.sel{border-color:var(--blue);box-shadow:0 0 0 2px rgba(32,183,243,.55),0 0 30px -8px rgba(32,183,243,.6)}
+#substrate-diagram .node.dim{opacity:.3}
+#substrate-diagram .records{flex-direction:column;gap:8px}
+#substrate-diagram .records .head{display:flex;justify-content:space-between;align-items:baseline;width:100%}
+#substrate-diagram .records .head .t{font:500 14px var(--f-head)}
+#substrate-diagram .records .head .s{font:400 10.5px var(--f-mono);color:var(--fg-3)}
+#substrate-diagram .records ul{list-style:none;width:100%;display:grid;gap:3px}
+#substrate-diagram .records li{display:grid;grid-template-columns:1fr auto auto;gap:8px;font:400 10.5px/1.5 var(--f-mono);color:var(--fg-2);animation:sd-slide .3s ease-out}
+#substrate-diagram .records li .st{color:var(--fg-3)}
+#substrate-diagram .records li .st.RUNNING{color:var(--green)}
+#substrate-diagram .records li .st.RESUMING,#substrate-diagram .records li .st.SUSPENDING{color:var(--amber)}
+#substrate-diagram .records li .wk{color:var(--fg-4);min-width:2.2em;text-align:right}
+#substrate-diagram .records .empty{font:400 11px var(--f-mono);color:var(--fg-4)}
+#substrate-diagram .worker{position:absolute;z-index:3;border-radius:14px;background:var(--bg-card);border:1px solid var(--line);padding:12px 12px 12px;
+  display:grid;grid-template-rows:auto auto 1fr;gap:9px;transition:opacity .25s,border-color .25s,box-shadow .25s;cursor:pointer}
+#substrate-diagram .worker .hd{display:flex;gap:10px;align-items:center}
+#substrate-diagram .worker .hd .ico{width:30px;height:30px;flex:0 0 30px;border-radius:8px;display:grid;place-items:center;background:rgba(32,183,243,.1);border:1px solid rgba(32,183,243,.3);color:#8fd8f5}
+#substrate-diagram .worker .hd .ico svg{width:16px;height:16px}
+#substrate-diagram .worker .hd .t{font:500 14px/1.15 var(--f-head)}
+#substrate-diagram .worker .hd .s{font:400 10.5px var(--f-mono);color:var(--fg-3)}
+#substrate-diagram .worker .hd .chip{margin-left:auto}
+#substrate-diagram .worker .mem{display:grid;gap:4px}
+#substrate-diagram .worker .mem .lbl{display:flex;justify-content:space-between;font:400 10.5px var(--f-mono);color:var(--fg-3)}
+#substrate-diagram .worker .mem .lbl b{font-weight:400;color:var(--fg-2)}
+#substrate-diagram .worker .mem .bar{height:5px;border-radius:5px;background:rgba(255,255,255,.07);overflow:hidden}
+#substrate-diagram .worker .mem .bar i{display:block;height:100%;width:var(--m,0%);background:linear-gradient(90deg,var(--green),#7ff0c9);transition:width .4s ease}
+#substrate-diagram .worker .mem .bar i.full{background:linear-gradient(90deg,var(--amber),#f7d38a)}
+#substrate-diagram .slots{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+#substrate-diagram .slot{border:1px dashed rgba(255,255,255,.14);border-radius:9px;padding:6px 8px;display:grid;align-content:center;gap:2px;min-height:58px;min-width:0}
+#substrate-diagram .slot .sl{font:400 9.5px var(--f-mono);letter-spacing:.05em;color:var(--fg-4)}
+#substrate-diagram .slot.vm{min-height:124px}
+#substrate-diagram .actor{border-radius:8px;padding:6px 8px;display:grid;gap:2px;background:rgba(47,212,167,.08);border:1px solid rgba(47,212,167,.35);animation:sd-pop .35s ease-out;min-width:0}
+#substrate-diagram .actor em{font-style:normal}
+#substrate-diagram .actor b{font:500 11.5px/1.2 var(--f-mono);color:#c8f7e9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#substrate-diagram .actor span{font:400 10px var(--f-mono);color:#8ff0d2;display:flex;justify-content:space-between;gap:6px;white-space:nowrap;overflow:hidden}
+#substrate-diagram .actor.RESUMING,#substrate-diagram .actor.booting{background:rgba(242,184,75,.08);border-color:rgba(242,184,75,.45)}
+#substrate-diagram .actor.RESUMING b,#substrate-diagram .actor.RESUMING span,#substrate-diagram .actor.booting b,#substrate-diagram .actor.booting span{color:#f6d38a}
+#substrate-diagram .actor.SUSPENDING,#substrate-diagram .actor.checkpoint{background:rgba(32,183,243,.08);border-color:rgba(32,183,243,.45);opacity:.75}
+#substrate-diagram .actor.SUSPENDING b,#substrate-diagram .actor.SUSPENDING span,#substrate-diagram .actor.checkpoint b,#substrate-diagram .actor.checkpoint span{color:#8fd8f5}
+#substrate-diagram .actor.golden{background:rgba(138,63,252,.12);border-color:rgba(183,156,255,.5)}
+#substrate-diagram .actor.golden b,#substrate-diagram .actor.golden span{color:#ddd0ff}
+#substrate-diagram .worker.starting{background:repeating-linear-gradient(-45deg,var(--bg-card) 0 8px,rgba(242,184,75,.07) 8px 11px);border-style:dashed}
+#substrate-diagram .worker.none{background:transparent;border-style:dashed;border-color:rgba(255,255,255,.12)}
+#substrate-diagram .worker.none>*,#substrate-diagram .worker.starting .slots,#substrate-diagram .worker.starting .mem{opacity:.25}
+#substrate-diagram .worker.on{border-color:var(--lilac);box-shadow:0 0 0 1px rgba(183,156,255,.25),0 0 34px -8px rgba(138,63,252,.7)}
+#substrate-diagram .worker.sel{border-color:var(--blue);box-shadow:0 0 0 2px rgba(32,183,243,.55)}
+#substrate-diagram .worker.dim{opacity:.35}
+#substrate-diagram .worker .cnum{top:-9px;right:-9px}
+#substrate-diagram #sd-packets circle.core{r:5}
+#substrate-diagram #sd-packets .pk text{font:500 10px var(--f-mono);fill:#fff}
+#substrate-diagram #sd-packets .pk rect{rx:6;ry:6}
+#substrate-diagram .side{position:sticky;top:20px;align-self:start;max-height:calc(100vh - 40px);overflow:auto;padding-right:4px;display:grid;gap:16px;min-width:0}
+#substrate-diagram .side>*{min-width:0}
+#substrate-diagram .card{padding:18px 20px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01))}
+#substrate-diagram .card .eyebrow{font-size:11.5px}
+#substrate-diagram .card h2{font:500 21px/1.25 var(--f-head);margin:8px 0 10px}
+#substrate-diagram .card p{font-size:14px;line-height:1.55;color:var(--fg-2)}
+#substrate-diagram .card p code,#substrate-diagram .card dd code{font:400 12.5px var(--f-mono);color:#d9ccff}
+#substrate-diagram .watch{display:grid;grid-template-columns:auto 1fr;gap:10px;margin-top:14px;padding:10px 12px;border-radius:12px;border:1px solid rgba(242,184,75,.35);background:rgba(242,184,75,.06);font-size:13.5px;line-height:1.5;color:var(--fg-2)}
+#substrate-diagram .watch .eye{font:400 10.5px var(--f-mono);color:var(--amber);padding-top:2px}
+#substrate-diagram .shell{position:relative;max-width:100%;margin-top:14px;padding:26px 16px 14px;border:1px solid var(--line-soft);border-radius:12px;background:rgba(0,0,0,.25);
+  font:400 12px/1.6 var(--f-mono);color:var(--fg-2);white-space:pre;overflow-x:auto}
+#substrate-diagram .shell::before{content:'shell';position:absolute;top:8px;right:12px;font-size:10px;color:var(--fg-4)}
+#substrate-diagram .kv{margin-top:14px;border-top:1px solid var(--line-soft)}
+#substrate-diagram .kv div{display:flex;justify-content:space-between;gap:16px;padding:8px 0;border-bottom:1px solid var(--line-soft)}
+#substrate-diagram .kv dt{font:400 11.5px var(--f-mono);color:var(--fg-3)}
+#substrate-diagram .kv dd{font:400 11.5px var(--f-mono);color:var(--fg-1);text-align:right}
+#substrate-diagram .done-banner{margin-top:14px;padding:10px 12px;border-radius:12px;background:rgba(47,212,167,.08);border:1px solid rgba(47,212,167,.35);font:400 12px/1.5 var(--f-mono);color:#8ff0d2}
+#substrate-diagram .comp .hint{font-size:13.5px;line-height:1.5;color:var(--fg-3)}
+#substrate-diagram .feed{list-style:none;display:grid;gap:2px;max-height:300px;overflow-y:auto;margin-top:10px}
+#substrate-diagram .feed li{display:grid;grid-template-columns:3em auto 1fr;gap:9px;align-items:baseline;font-size:12.5px;line-height:1.45;color:var(--fg-2);padding:6px 0;border-bottom:1px solid var(--line-soft);animation:sd-slide .3s ease-out}
+#substrate-diagram .feed .ts{font:400 10.5px var(--f-mono);color:var(--fg-4);font-variant-numeric:tabular-nums}
+#substrate-diagram .feed .k{font:400 9.5px/1 var(--f-mono);padding:3px 6px;border-radius:5px;border:1px solid var(--chip);color:var(--fg-2);white-space:nowrap}
+#substrate-diagram .k-cli{border-color:rgba(183,156,255,.45)!important;color:var(--lilac)!important}
+#substrate-diagram .k-api{border-color:rgba(138,63,252,.6)!important;color:#d9ccff!important}
+#substrate-diagram .k-router{border-color:rgba(183,156,255,.45)!important;color:var(--lilac)!important}
+#substrate-diagram .k-k8s{border-color:rgba(255,255,255,.3)!important}
+#substrate-diagram .k-atelet,#substrate-diagram .k-snap{border-color:rgba(32,183,243,.45)!important;color:#8fd8f5!important}
+#substrate-diagram .k-egress{border-color:rgba(242,184,75,.45)!important;color:var(--amber)!important}
+#substrate-diagram .k-ok{border-color:rgba(47,212,167,.45)!important;color:var(--green)!important}
+#substrate-diagram .k-deny{border-color:rgba(255,107,122,.5)!important;color:var(--red)!important}
+#substrate-diagram .feed .empty{display:block;color:var(--fg-4);font-size:12.5px;border:0}
+@media (prefers-reduced-motion:reduce){#substrate-diagram #sd-wires path.w.on{animation:none}#substrate-diagram *{transition:none!important;animation:none!important}}
+
+/* ---------- embed shell ---------- */
+#substrate-diagram{container:sd/inline-size;position:relative;margin:1.5rem 0 2rem;padding:22px 22px 26px;border-radius:18px;
+  background:var(--bg-0);color:var(--fg-1);font-family:var(--f-body);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;max-width:none}
+#substrate-diagram:fullscreen{overflow:auto;border-radius:0;margin:0;padding:28px}
+#substrate-diagram .sd-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:6px 16px;margin-bottom:6px}
+#substrate-diagram .sd-head .t{font:500 18px/1.3 var(--f-head)}
+#substrate-diagram .sd-clock{font:400 12px var(--f-mono);color:var(--fg-3);font-variant-numeric:tabular-nums}
+#substrate-diagram .controls{margin:12px 0 12px}
+#substrate-diagram .sd-body{display:grid;gap:20px}
+#substrate-diagram .side{position:static;max-height:none;overflow:visible;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));align-items:start}
+#substrate-diagram .cnum.in-label{position:static;width:18px;height:18px;font-size:9.5px}
+#substrate-diagram code{font:400 .92em var(--f-mono);color:#d9ccff;background:none;padding:0}
+#substrate-diagram .rail{grid-template-columns:repeat(5,minmax(0,1fr))}
+@container sd (min-width:900px){#substrate-diagram .rail{grid-template-columns:repeat(9,minmax(0,1fr))}}
+@container sd (max-width:560px){#substrate-diagram .rail{grid-template-columns:repeat(3,minmax(0,1fr))}#substrate-diagram .side{grid-template-columns:1fr}}
+@container sd (min-width:1500px){
+  #substrate-diagram .sd-body{grid-template-columns:minmax(0,1fr) 400px}
+  #substrate-diagram .side{grid-template-columns:1fr;position:sticky;top:20px;max-height:calc(100vh - 40px);overflow:auto}
+}

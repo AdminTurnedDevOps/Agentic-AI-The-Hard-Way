@@ -155,7 +155,3 @@ Or delete the cluster and the local registry:
 ```bash
 hack/delete-kind-cluster.sh
 ```
-
-## Next
-
-[Your first Actor](first-actor.md).

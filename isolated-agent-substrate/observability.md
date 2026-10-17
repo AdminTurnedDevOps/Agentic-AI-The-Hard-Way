@@ -123,7 +123,3 @@ kubectl ate delete egress-policy watch-me -a obs-lab
 kubectl ate delete actor watch-me -a obs-lab --any-state
 kubectl ate delete atespace obs-lab
 ```
-
-## Next
-
-[Permissions in front of Actors with OpenFGA](openfga-permissions.md).
