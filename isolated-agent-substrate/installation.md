@@ -90,6 +90,57 @@ This install keeps the default dataplane for the router and egress gateway, **En
 
 Every run prints the settings it used and where each value came from, and saves them to `~/.cache/ate-setup/installs/<context>.yaml`.
 
+### Step 3a. Install Substrate On GKE
+
+**prereqs**
+1. A snapshot mbucket in GCS
+2. Any registry ko pushes to and nodes pull from. GCR/Artifact Registry natural on GKE, but not required
+3. Clone of the Substrate repo: https://github.com/agent-substrate/substrate
+4. Build the Substrate images which consist of 
+
+```bash
+git clone https://github.com/agent-substrate/substrate && cd substrate
+    git checkout v0.5.0
+    go build -o /tmp/ate-setup ./cmd/ate-setup
+    go build -o /tmp/kubectl-ate ./cmd/kubectl-ate
+
+/tmp/ate-setup deploy ate-system \
+  --config substrate-install.yaml --no-dev-env \
+  --credential-provider='{"enabled":false}' \
+  --ateapi-postgres-storage-class standard \
+  --rollout-timeout 5m
+  ```
+
+**If you want to install Substrate on GKE instead of Kind**:
+
+One liner:
+```bash
+ATE_ATENET_DATAPLANE=agentgateway NO_DEV_ENV=1 \
+BUCKET_NAME=<bucket> KO_DOCKER_REPO=gcr.io/<PROJECT>/ate-images KUBECTL_CONTEXT=<ctx> \
+hack/install-ate.sh --deploy-ate-system \
+  --credential-provider='{"enabled":false}' \
+  --ateapi-postgres-storage-class standard --rollout-timeout 5m
+```
+
+**if you want to use the Substrate setup via the `ate-setup`
+
+```yaml
+apiVersion: install.ate.dev/v1alpha1
+kind: SubstrateInstall
+namespace: ate-system
+context: <kubeconfig-context>
+clusterSize: size0
+atenet:
+  dataplane: agentgateway
+storage:
+  bucketName: <bucket>
+gcp:
+  projectID: <PROJECT>
+ko:
+  dockerRepo: gcr.io/<PROJECT>/ate-images
+  defaultPlatforms: linux/amd64
+```
+
 ## Step 4: Install the `kubectl ate` plugin
 
 ```bash
