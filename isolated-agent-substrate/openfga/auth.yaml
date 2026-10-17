@@ -1,0 +1,114 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: openfga-actors-auth
+  namespace: openfga-actors
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: alice
+  namespace: openfga-actors
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: bob
+  namespace: openfga-actors
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: openfga-actors-token-review
+rules:
+- apiGroups: [authentication.k8s.io]
+  resources: [tokenreviews]
+  verbs: [create]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: openfga-actors-token-review
+roleRef:
+  kind: ClusterRole
+  name: openfga-actors-token-review
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+- kind: ServiceAccount
+  name: openfga-actors-auth
+  namespace: openfga-actors
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openfga-actors-auth
+  namespace: openfga-actors
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: openfga-actors-auth
+  template:
+    metadata:
+      labels:
+        app: openfga-actors-auth
+    spec:
+      serviceAccountName: openfga-actors-auth
+      containers:
+      - name: adapter
+        image: ADAPTER_IMAGE_PLACEHOLDER
+        ports:
+        - containerPort: 8080
+          name: http
+        env:
+        - name: OPENFGA_STORE_ID
+          valueFrom:
+            configMapKeyRef:
+              name: openfga-actors-ids
+              key: store
+        - name: OPENFGA_MODEL_ID
+          valueFrom:
+            configMapKeyRef:
+              name: openfga-actors-ids
+              key: model
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: http
+        volumeMounts:
+        - name: ate-ca
+          mountPath: /run/servicedns-ca
+          readOnly: true
+        - name: ate-token
+          mountPath: /run/ate-token
+          readOnly: true
+      volumes:
+      - name: ate-ca
+        projected:
+          sources:
+          - clusterTrustBundle:
+              signerName: servicedns.podcert.ate.dev/identity
+              labelSelector:
+                matchLabels:
+                  podcert.ate.dev/canarying: live
+              path: trust-bundle.pem
+      - name: ate-token
+        projected:
+          sources:
+          - serviceAccountToken:
+              path: token
+              audience: api.ate-system.svc
+              expirationSeconds: 3600
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: openfga-actors-auth
+  namespace: openfga-actors
+spec:
+  selector:
+    app: openfga-actors-auth
+  ports:
+  - name: http
+    port: 8080
+    targetPort: http

@@ -1,0 +1,20 @@
+// Wire-compatible subset of substrate/pkg/proto/ateapipb/ateapi.proto.
+// Check field numbers against the Substrate checkout used by the lab.
+syntax = "proto3";
+package ateapi;
+
+service Control {
+  rpc GetActor(GetActorRequest) returns (Actor);
+}
+
+message ObjectRef {
+  string atespace = 1;
+  string name = 2;
+}
+message ResourceMetadata {
+  string atespace = 1;
+  string name = 2;
+  string uid = 3;
+}
+message GetActorRequest { ObjectRef actor = 1; }
+message Actor { ResourceMetadata metadata = 1; }

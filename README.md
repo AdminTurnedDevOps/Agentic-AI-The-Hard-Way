@@ -61,8 +61,8 @@ You will be using the following technologies and platforms to set up an Agentic 
     - LLMs are the "new wave Models" that many organizations are focused on. They are definitely the standard/default at this point. They differ though ranging from SaaS-based Models (like Claude, Gemini, GPT, etc.) to open-source Models that you can control, fine-tune, and run in your environment (like Deepseek and Llama)
 9. AI Security
     - Rate limiting, prompt guards, authentication, authorization, and MCP security
-10. Nvidias OpenShell
-    - OpenShell for Agentic sandboxing.
+10. Agent Substrate and kagent
+    - Agent Substrate for Agentic sandboxing and kagent to interact with your sandbox environment.
 11. Testing
     - Agent Evals
     - Performance testing
@@ -123,10 +123,25 @@ This section goes over using kagent + Agent Substrate, which is the way to perfo
 [prereq - learn Substrate](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent/learn-substrate.md)
 1. [Install Sandbox](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent/installation.md)
 2. [Using Kagent Substrate](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent/kagent-substrate.md)
+3. [Hermes With Kagent + Agent Substrate](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent/byo-harness-hermes.md)
+4. [Egress With Agentgateway For Substrate](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent/inference-with-agw.md)
 
 ### Isolated Environments With Agent Substrate
 
-WIP
+The labs within this section go over Agent Substrate in a standalone fashion. No runtime on top of it. Raw Agent Substrate to understand the internals of Substrate and how it works underneath the hood.
+
+1. [Substrate Components](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent-substrate/components.md)
+2. [Install Agent Substrate](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent-substrate/installation.md)
+3. [Your First Actor](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent-substrate/first-actor.md)
+4. [Multi-Tenant Actors](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent-substrate/multi-tenancy-teleport.md)
+5. [MicroVM As Your Isolation Layer](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent-substrate/microvm.md)
+6. [Parking and Scaling Actors](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent-substrate/parking-autoscaling.md)
+7. [Multiplexing Actors](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent-substrate/multiplexing.md)
+8. [Substrate Observability](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent-substrate/observability.md)
+9. [One Worker, Many Actors](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent-substrate/worker-packing.md)
+10. [ReBAC With OpenFGA and Substrate](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent-substrate/openfga-permissions.md)
+11. [Cost Optimization With Substrate](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent-substrate/cost-comparison.md)
+
 
 ### The Observer
 

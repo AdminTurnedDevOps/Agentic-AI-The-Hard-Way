@@ -1,0 +1,84 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: openfga-actors-gateway
+  namespace: openfga-actors
+data:
+  config.yaml: |
+    # yaml-language-server: $schema=https://agentgateway.dev/schema/config
+    gateways:
+      http:
+        port: 8080
+        protocol: HTTP
+    routes:
+    - name: protected-actors
+      gateways: [http]
+      matches:
+      - path:
+          pathPrefix: /
+      policies:
+        extAuthz:
+          host: openfga-actors-auth.openfga-actors.svc:8080
+          failureMode: deny
+          policies:
+            http:
+              requestTimeout: 10s
+          includeRequestHeaders: [authorization, ate-target-actor]
+          protocol:
+            http:
+              path: '"/authorize"'
+      backends:
+      - host: atenet-router.ate-system.svc:80
+        policies:
+          requestHeaderModifier:
+            remove: [authorization]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openfga-actors-gateway
+  namespace: openfga-actors
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: openfga-actors-gateway
+  template:
+    metadata:
+      labels:
+        app: openfga-actors-gateway
+    spec:
+      containers:
+      - name: agentgateway
+        image: cr.agentgateway.dev/agentgateway:v1.5.0
+        args: [-f, /etc/agentgateway/config.yaml]
+        ports:
+        - containerPort: 8080
+          name: http
+        - containerPort: 15021
+          name: readiness
+        readinessProbe:
+          httpGet:
+            path: /healthz/ready
+            port: 15021
+          periodSeconds: 5
+        volumeMounts:
+        - name: config
+          mountPath: /etc/agentgateway
+      volumes:
+      - name: config
+        configMap:
+          name: openfga-actors-gateway
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: openfga-actors-gateway
+  namespace: openfga-actors
+spec:
+  selector:
+    app: openfga-actors-gateway
+  ports:
+  - name: http
+    port: 8080
+    targetPort: http

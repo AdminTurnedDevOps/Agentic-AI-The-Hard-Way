@@ -4,7 +4,8 @@ test('search finds the Substrate install lab', async ({ page }) => {
   await page.goto('/');
   await page.keyboard.press('/');
   await expect(page.locator('#site-search')).toBeFocused();
-  await page.keyboard.type('substrate');
+  // A term only this page uses. "substrate" now matches more pages than the 8 results shown.
+  await page.keyboard.type('defaultModelProvider');
   await expect(page.locator('[data-search-results] a[href="/isolated-agent/installation/"]')).toBeVisible();
 });
 
