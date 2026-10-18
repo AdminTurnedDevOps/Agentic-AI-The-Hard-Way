@@ -81,18 +81,18 @@ metadata:
   labels:
     workload: packing
 spec:
-  replicas: 2
+  replicas: 1
   workerImage: ${WORKER_IMAGE}
   sandboxClasses:
   - name: gvisor
   template:
     resources:
       limits:
-        cpu: "2"
-        memory: 1Gi
+        cpu: "10"
+        memory: 10Gi
       requests:
-        cpu: 250m
-        memory: 1Gi
+        cpu: 1000m
+        memory: 6Gi
 EOF
 
 kubectl rollout status deployment/packing -n ate-packing
