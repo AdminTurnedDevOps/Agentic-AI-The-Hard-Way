@@ -167,7 +167,7 @@ Create a template whose Actors each use a full CPU:
 
 ```bash
 export COUNTER_IMAGE=$(kubectl ate get actor-template counter -a ate-demo-autoscaled-workerpool -o json \
-  | jq -r '.actorTemplates[0].containers[0].image')
+  | jq -r '.containers[0].image')
 
 kubectl ate create actor-template -f - <<EOF
 metadata:
