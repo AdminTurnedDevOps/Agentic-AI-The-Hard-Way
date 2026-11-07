@@ -1,4 +1,10 @@
 apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: openfga-actors-gateway
+  namespace: openfga-actors
+---
+apiVersion: v1
 kind: ConfigMap
 metadata:
   name: openfga-actors-gateway
@@ -28,8 +34,14 @@ data:
             http:
               path: '"/authorize"'
       backends:
-      - host: atenet-router.ate-system.svc:80
+      # The router only accepts mTLS from SPIFFE IDs on its allowlist.
+      - host: atenet-router.ate-system.svc:443
         policies:
+          backendTLS:
+            cert: /run/router-client/credential-bundle.pem
+            key: /run/router-client/credential-bundle.pem
+            root: /run/router-client/router-ca.pem
+            hostname: atenet-router.ate-system.svc
           requestHeaderModifier:
             remove: [authorization]
 ---
@@ -48,6 +60,7 @@ spec:
       labels:
         app: openfga-actors-gateway
     spec:
+      serviceAccountName: openfga-actors-gateway
       containers:
       - name: agentgateway
         image: cr.agentgateway.dev/agentgateway:v1.5.0
@@ -65,10 +78,28 @@ spec:
         volumeMounts:
         - name: config
           mountPath: /etc/agentgateway
+        - name: router-client
+          mountPath: /run/router-client
+          readOnly: true
       volumes:
       - name: config
         configMap:
           name: openfga-actors-gateway
+      # Client certificate for spiffe://cluster.local/ns/openfga-actors/sa/openfga-actors-gateway,
+      # plus the CA that signs the router's serving certificate.
+      - name: router-client
+        projected:
+          sources:
+          - podCertificate:
+              signerName: podidentity.podcert.ate.dev/identity
+              keyType: ECDSAP256
+              credentialBundlePath: credential-bundle.pem
+          - clusterTrustBundle:
+              signerName: servicedns.podcert.ate.dev/identity
+              labelSelector:
+                matchLabels:
+                  podcert.ate.dev/canarying: live
+              path: router-ca.pem
 ---
 apiVersion: v1
 kind: Service

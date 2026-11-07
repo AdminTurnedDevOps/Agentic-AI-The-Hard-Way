@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: openfga-actors
+  labels:
+    # v1.0.0 NetworkPolicy admits Substrate API callers only from labeled namespaces.
+    ate.dev/api-access: "true"

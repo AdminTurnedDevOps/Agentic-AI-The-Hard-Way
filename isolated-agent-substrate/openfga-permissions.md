@@ -1,6 +1,6 @@
 # Permissions in Front of Actors with OpenFGA
 
-Substrate decides **where** an Actor runs and **what it can reach** on the way out (egress policies). It doesn't yet decide **who may call** an Actor. This lab adds that: an OSS **agentgateway** in front of the Substrate router asks **OpenFGA** before every request.
+Substrate decides **where** an Actor runs, **what it can reach** on the way out (egress policies), and **who may manage it** through the API (access policies). It doesn't decide **who may call** an Actor: the router lets any client on its allowlist reach any Actor. This lab adds that check: an OSS **agentgateway** in front of the Substrate router asks **OpenFGA** before every request.
 
 ```text
 client (short-lived Kubernetes ServiceAccount token)
@@ -8,7 +8,7 @@ client (short-lived Kubernetes ServiceAccount token)
        -> extAuthz adapter -> Kubernetes TokenReview          (who is calling?)
                            -> Substrate GetActor               (which Actor UID is the target?)
                            -> OpenFGA Check(user, can_invoke, actor:<uid>)
-       -> allowed: atenet-router -> resume the Actor -> worker
+       -> allowed: mTLS -> atenet-router :443 -> resume the Actor -> worker
        -> denied:  403, and the Substrate router never sees the request
 ```
 
@@ -18,27 +18,27 @@ What it demonstrates:
 - **Permissions follow the Actor, not the Pod.** They're keyed on the Actor's UID, so they hold when the Actor moves between workers.
 - **Grant and revoke without restarting anything.** It's a tuple write in OpenFGA.
 
-> **Status:** Commands checked against the Substrate **v0.5.0** source. The adapter image builds and its unit tests pass. The full lab has **not** been run end to end on a cluster yet.
+> **Status:** Commands checked against the Substrate **v1.0.0** source. The adapter image builds and its unit tests pass. The full lab has **not** been run end to end on a cluster yet.
 
 ## Where Substrate is today
 
-Know the baseline before adding a layer. From the v0.5.0 docs (`docs/authentication.md`, `docs/security.md`):
+Know the baseline before adding a layer. From the v1.0.0 docs (`docs/security/security.md`, `docs/guides/authentication.md`, `docs/guides/authorization.md`):
 
-| Layer | Status in v0.5.0 |
+| Layer | Status in v1.0.0 |
 | --- | --- |
-| **Control-plane API** (ate-api-server) | Authenticates mTLS certificates and bearer JWTs, but **authorization and RBAC aren't implemented yet**. Any authenticated caller has full control of every atespace, Actor, template, egress policy, snapshot, and worker. An embedded OpenFGA model is being integrated |
+| **Control-plane API** (ate-api-server) | Authenticates mTLS certificates and bearer JWTs, then **authorizes every call** against access policies with an embedded OpenFGA model. Roles are `owner`, `editor`, and `viewer`, per atespace or global |
 | **Network access to the API** | NetworkPolicy admits only Substrate's own components and namespaces labeled `ate.dev/api-access=true` |
-| **Calling an Actor** (atenet-router) | No built-in caller authorization. Add an authenticating proxy (this lab) or an `ext_proc` filter |
+| **Calling an Actor** (atenet-router) | mTLS only, from clients whose SPIFFE ID is on `--ingress-allowed-spiffe-ids`. Any allowed client can reach **any** Actor. No per-caller or per-Actor check |
 | **Actor-to-Actor** authorization | Not built in yet |
 
-So this lab's adapter, which only needs `GetActor`, gets a token that can do **everything** on the control plane. Treat it as a privileged component.
+Substrate's embedded OpenFGA and this lab's OpenFGA are separate. The embedded one guards the API; this one guards requests to Actors, in its own store.
 
 ## Prerequisites
 
-- [Install Agent Substrate (Standalone)](installation.md) on kind.
-- The counter demo (`hack/install-ate-kind.sh --deploy-demo-counter`).
+- [Install Agent Substrate (Standalone)](installation.md) on kind, with the Substrate checkout and `ATE_INSTALL_KIND=true` from that install. You'll redeploy the router once.
+- The counter demo (`go run ./cmd/ate-setup deploy demo counter`).
 - `helm`, `docker`, `curl`, and `jq`.
-- A terminal in the **root of this repository** (`Agentic-AI-The-Hard-Way`). The adapter source and manifests are in [`isolated-agent-substrate/openfga/`](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/tree/main/isolated-agent-substrate/openfga).
+- A second terminal in the **root of this repository** (`Agentic-AI-The-Hard-Way`). The adapter source and manifests are in [`isolated-agent-substrate/openfga/`](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/tree/main/isolated-agent-substrate/openfga). The commands below say which terminal to use.
 
 ## Step 1: Create the Actors
 
@@ -47,8 +47,8 @@ kubectl ate create atespace openfga-lab
 kubectl ate create actor tool-a -a openfga-lab --template ate-demo-counter/counter
 kubectl ate create actor tool-b -a openfga-lab --template ate-demo-counter/counter
 
-export TOOL_A_UID=$(kubectl ate get actor tool-a -a openfga-lab -o json | jq -r '.actors[0].metadata.uid')
-export TOOL_B_UID=$(kubectl ate get actor tool-b -a openfga-lab -o json | jq -r '.actors[0].metadata.uid')
+export TOOL_A_UID=$(kubectl ate get actor tool-a -a openfga-lab -o json | jq -r '.metadata.uid')
+export TOOL_B_UID=$(kubectl ate get actor tool-b -a openfga-lab -o json | jq -r '.metadata.uid')
 echo "tool-a=${TOOL_A_UID} tool-b=${TOOL_B_UID}"
 ```
 
@@ -56,11 +56,10 @@ OpenFGA grants are keyed on the Actor's **UID**, not its name. If you delete `to
 
 ## Step 2: Install OpenFGA
 
-The lab namespace needs the `ate.dev/api-access=true` label so the adapter can reach ate-api-server through Substrate's NetworkPolicy:
+From this repository's root. The namespace carries the `ate.dev/api-access=true` label, so the adapter can reach ate-api-server through Substrate's NetworkPolicy:
 
 ```bash
-kubectl create namespace openfga-actors
-kubectl label namespace openfga-actors ate.dev/api-access=true
+kubectl apply -f isolated-agent-substrate/openfga/namespace.yaml
 ```
 
 Install OpenFGA `v1.21.0` (Helm chart `0.3.15`) as a single replica with the **in-memory** datastore:
@@ -136,20 +135,45 @@ kubectl -n openfga-actors create configmap openfga-actors-ids \
   --from-literal=store="${STORE_ID}" --from-literal=model="${MODEL_ID}"
 ```
 
-## Step 4: Build and deploy the adapter and the gateway
+## Step 4: Let the adapter and the gateway into Substrate
+
+Both new components talk to Substrate, and v1.0.0 checks both.
+
+**The adapter reads Actors through the API.** `GetActor` needs at least `viewer` on the Actor's atespace. Grant that to the adapter's ServiceAccount on `openfga-lab`:
+
+```bash
+kubectl ate create access-policy -a openfga-lab -f - <<'EOF'
+bindings:
+- role: viewer
+  members:
+  - user:system:serviceaccount:openfga-actors:openfga-actors-auth
+EOF
+```
+
+`viewer` lets the adapter read Actors and nothing more: it can't resume, suspend, or delete them.
+
+**The gateway calls Actors through the router.** The router only accepts clients whose SPIFFE ID is on its allowlist. Add the gateway's ID, `spiffe://cluster.local/ns/openfga-actors/sa/openfga-actors-gateway`. Each deploy **replaces** the list, so repeat the two IDs from the install. In the **Substrate checkout**, with `ATE_INSTALL_KIND=true` and `KIND_CLUSTER_NAME` still exported:
+
+```bash
+go run ./cmd/ate-setup deploy atenet \
+  --credential-provider='{"name":"k8s.io"}' \
+  --ingress-allowed-spiffe-ids=spiffe://cluster.local/ns/ate-system/sa/atenet-client,spiffe://cluster.local/ns/ate-lab/sa/router-client,spiffe://cluster.local/ns/openfga-actors/sa/openfga-actors-gateway
+```
+
+## Step 5: Build and deploy the adapter and the gateway
 
 The adapter is a small Python HTTP service (`isolated-agent-substrate/openfga/adapter/server.py`). On each request it:
 
 1. Sends the caller's bearer token to the Kubernetes **TokenReview** API (audience `openfga-actors`). Only the `openfga-actors/alice` and `openfga-actors/bob` ServiceAccounts count as callers.
-2. Calls Substrate **`GetActor`** for the `ate-target-actor` header, to get the Actor's current UID. It authenticates to ate-api-server with a projected ServiceAccount token (audience `api.ate-system.svc`), and trusts it through the `servicedns.podcert.ate.dev` ClusterTrustBundle.
+2. Calls Substrate **`GetActor`** for the `ate-target-actor` header, to get the Actor's current UID. It authenticates to ate-api-server (`api.ate-system.svc:443`) with a projected ServiceAccount token (audience `api.ate-system.svc`), and trusts it through the `servicedns.podcert.ate.dev` ClusterTrustBundle. Its gRPC stub (`adapter/ateapi_subset.proto`) is a wire-compatible subset of Substrate's `api/ateapi/v1/ateapi.proto`, in the package `substrate.ateapi.v1`.
 3. Asks OpenFGA: `Check(user:<caller>, can_invoke, actor:<uid>)`.
 
 It **fails closed**: `401` for a missing or invalid token, `403` for an unknown caller or a denied check, and `503` if TokenReview, Substrate, or OpenFGA is unreachable.
 
-Build it and push it to the kind registry:
+Back in this repository's root, build it and push it to the kind registry:
 
 ```bash
-export IMAGE=localhost:5001/openfga-actors-auth:v0.1.0
+export IMAGE=localhost:5001/openfga-actors-auth:v0.2.0
 
 docker build -t "${IMAGE}" isolated-agent-substrate/openfga/adapter
 docker push "${IMAGE}"
@@ -187,13 +211,20 @@ policies:
       http:
         path: '"/authorize"'
 backends:
-- host: atenet-router.ate-system.svc:80
+- host: atenet-router.ate-system.svc:443
   policies:
+    backendTLS:                                        # mTLS to the router
+      cert: /run/router-client/credential-bundle.pem
+      key: /run/router-client/credential-bundle.pem
+      root: /run/router-client/router-ca.pem
+      hostname: atenet-router.ate-system.svc
     requestHeaderModifier:
       remove: [authorization]                          # the Actor never sees the caller's token
 ```
 
-This gateway is separate from Substrate's own router dataplane. A Gateway API `AgentgatewayPolicy` doesn't configure Substrate's internal agentgateway or Envoy.
+The gateway runs as the `openfga-actors-gateway` ServiceAccount. A `podCertificate` projected volume gives it a client certificate carrying the SPIFFE ID you allowlisted, plus the CA that signs the router's serving certificate, the same way as the lab router client from the install. agentgateway watches those files, so it should pick up rotated certificates. If allowed calls start failing with TLS errors after the Pod has run for a while, restart it with `kubectl -n openfga-actors rollout restart deployment/openfga-actors-gateway`.
+
+This gateway is separate from Substrate's own router dataplane. A Gateway API `AgentgatewayPolicy` doesn't configure Substrate's router.
 
 Port-forward the lab gateway in a separate terminal:
 
@@ -201,7 +232,7 @@ Port-forward the lab gateway in a separate terminal:
 kubectl -n openfga-actors port-forward svc/openfga-actors-gateway 18080:8080
 ```
 
-## Step 5: Allow, deny, revoke
+## Step 6: Allow, deny, revoke
 
 Issue short-lived tokens for the two callers:
 
@@ -288,21 +319,33 @@ kubectl ate get actor tool-a -a openfga-lab
 
 ## What this does and doesn't protect
 
-- It protects the **entry point you publish**: the lab gateway. Substrate's own `atenet-router` still accepts traffic from any namespace in the cluster (that's its v0.5.0 NetworkPolicy), so a Pod inside the cluster can bypass the gateway by calling the router directly. To close that, add your own NetworkPolicy that only admits the lab gateway to `atenet-router`.
-- The adapter's ate-api token has full control-plane access, because ate-api-server has no authorization yet.
+- It protects the **entry point you publish**: the lab gateway. **Every other client on the router's allowlist bypasses it.** In this install that's `kubectl ate proxy` (`atenet-client`) and the lab router client (`ate-lab/router-client`). To make the gateway a real boundary, allowlist only its ID.
+- It gates ordinary HTTP requests, not the router's separate CONNECT listener (port 8444, used by `kubectl ate proxy`), and not Substrate API calls. Substrate's own access policies authorize those.
+- The adapter's API identity is only a `viewer` of `openfga-lab`. If it also has to look up Actors in other atespaces, grant `viewer` there too.
 - Callers are Kubernetes ServiceAccounts here. In production, the gateway would validate tokens from your real identity provider.
+- Actor-to-Actor calls aren't covered. Don't trust an Actor-supplied header for that. Substrate v1.0.0's egress gateway can inject a short-lived **Actor JWT** (`sub: actor/<atespace>/<name>`) into an Actor's outbound calls; an adapter that verified it could use `actor:<uid>` as the OpenFGA subject. See `docs/guides/actor-jwts.md` in the Substrate repo. This adapter doesn't do that yet.
 
 ## Clean up
+
+From this repository's root:
 
 ```bash
 kubectl delete -f isolated-agent-substrate/openfga/gateway.yaml --ignore-not-found
 kubectl delete -f isolated-agent-substrate/openfga/auth.yaml --ignore-not-found
 helm uninstall openfga -n openfga-actors
-kubectl delete namespace openfga-actors
+kubectl delete -f isolated-agent-substrate/openfga/namespace.yaml
 
-kubectl ate delete actor tool-a -a openfga-lab --any-state
-kubectl ate delete actor tool-b -a openfga-lab --any-state
+kubectl ate delete actor tool-a -a openfga-lab
+kubectl ate delete actor tool-b -a openfga-lab
 kubectl ate delete atespace openfga-lab
 ```
 
-`auth.yaml` also creates a cluster-scoped ClusterRole and ClusterRoleBinding (`openfga-actors-token-review`), so delete it with `kubectl delete -f` rather than only deleting the namespace.
+`auth.yaml` also creates a cluster-scoped ClusterRole and ClusterRoleBinding (`openfga-actors-token-review`), so delete it with `kubectl delete -f` rather than only deleting the namespace. Deleting the atespace also deletes the adapter's access policy.
+
+Then take the gateway's ID off the router allowlist, so anything created later as `openfga-actors/openfga-actors-gateway` can't reach Actors. In the Substrate checkout:
+
+```bash
+go run ./cmd/ate-setup deploy atenet \
+  --credential-provider='{"name":"k8s.io"}' \
+  --ingress-allowed-spiffe-ids=spiffe://cluster.local/ns/ate-system/sa/atenet-client,spiffe://cluster.local/ns/ate-lab/sa/router-client
+```

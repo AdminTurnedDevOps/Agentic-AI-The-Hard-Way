@@ -13,12 +13,12 @@ This lab walks the core Substrate objects by hand, with nothing but `kubectl` an
 
 Capacity (WorkerPools) is Kubernetes. Everything that changes often (templates, Actors, which Actor sits on which worker) lives in Substrate's own API, because it changes too fast for etcd.
 
-> **Status:** Commands checked against the Substrate **v0.5.0** source. Not yet run end to end on a cluster.
+> **Status:** Commands checked against the Substrate **v1.0.0** source. Not yet run end to end on a cluster.
 
 ## Prerequisites
 
 - [Install Agent Substrate (Standalone)](installation.md).
-- A terminal in the root of the Substrate `v0.5.0` clone.
+- A terminal in the root of the Substrate `v1.0.0` clone, with `ATE_INSTALL_KIND=true` and `KIND_CLUSTER_NAME` exported.
 
 ## Step 1: Deploy the counter demo
 
@@ -28,16 +28,16 @@ The counter is a small Go HTTP server. Every request increments three counters:
 - one in a file on a **durable volume**
 - one on the **root filesystem**
 
-It replies with all three, plus the IP address it answered from. That makes it ideal for watching state survive a suspend and resume.
+It replies with all three. That makes it ideal for watching state survive a suspend and resume.
 
 ```bash
-hack/install-ate-kind.sh --deploy-demo-counter
+go run ./cmd/ate-setup deploy demo counter
 ```
 
 The installer:
 
 1. Builds the counter image with `ko` and pushes it to the local registry.
-2. Applies the `ate-demo-counter` namespace and the `counter` WorkerPool (3 workers).
+2. Applies the `ate-demo-counter` namespace and the `counter` WorkerPool (3 workers), and waits for the workers to roll out.
 3. Creates the `ate-demo-counter` atespace.
 4. Creates the `counter` ActorTemplate with `kubectl ate create actor-template`.
 5. Waits for the template's **golden snapshot**.
@@ -49,7 +49,9 @@ kubectl get workerpool counter -n ate-demo-counter -o yaml
 kubectl get pods -n ate-demo-counter
 ```
 
-The WorkerPool becomes a Deployment of three warm worker Pods. Each Pod runs `ateom`, the in-Pod coordinator that drives the gVisor sandbox. The pool's `spec.template.resources.limits` (1 CPU, 1 GiB) is each worker's **capacity**: the budget the Actors placed on it share.
+The WorkerPool (`apiVersion: ate.dev/v1`) becomes a Deployment of three warm worker Pods. Each Pod runs `ateworker-gvisor`, the in-Pod coordinator that drives the gVisor sandbox. The pool's `spec.sandboxClasses` is `[{name: gvisor}]`, so its workers run gVisor sandboxes with the binaries from the class default SandboxConfig, `gvisor-default`.
+
+The pool's `spec.template.resources.limits` (1 CPU, 1 GiB) is each worker's **capacity**: the budget the Actors placed on it share. The worker keeps 64 MiB of the memory for itself, so it reports 960 MiB.
 
 Substrate's view of the same Pods:
 
@@ -57,7 +59,7 @@ Substrate's view of the same Pods:
 kubectl ate get workers
 ```
 
-The `ACTORS` column shows `0/1000` for each: no Actors placed, against the default limit of 1000 Actors per worker. The `CPU` and `MEMORY` columns show **allocated/capacity**, for example `0/1` and `0/1Gi`.
+The `ACTORS` column shows `0/1000` for each: no Actors placed, against the default limit of 1000 Actors per worker. The `CPU(MILLICORES)` and `MEMORY` columns show **allocated/capacity**: `0/1000` and `0/960Mi`.
 
 ## Step 3: Look at the template (Substrate API)
 
@@ -85,15 +87,15 @@ The parts of the manifest that matter:
 | `metadata.atespace` / `metadata.name` | The template's identity. Templates live in an atespace |
 | `workerSelector.matchLabels` | Which WorkerPools may run it, matched against the **WorkerPool's** labels (`workload: counter`) |
 | `containers[].wakeupProbe` | `GET /readyz` on port 80. Substrate waits for it before it snapshots or hands the Actor traffic |
-| `resources.limits` | The sandbox size (1 CPU, 512 Mi). Also used to place the Actor on a worker with enough capacity |
+| `resources.limits` | The sandbox size, `cpuMillicores: 1000` and `memoryBytes: 536870912` (512 MiB). Also used to place the Actor on a worker with enough capacity |
 | `snapshotConfig.preferredFidelity` | `SNAPSHOT_FIDELITY_MEMORY`: snapshots hold process memory, rootfs changes, and volumes |
-| `snapshotConfig.storageLocation` | Where snapshots go (`gs://ate-snapshots/…`, the in-cluster RustFS bucket on kind) |
-| `sandboxConfig` | `sandboxClass: gvisor` plus `configName: gvisor-default`, the SandboxConfig that supplies `runsc` |
 | `volumes[].durableDir` | A per-Actor directory that survives suspend and resume |
 
-Templates are **immutable**. There's no update: a new version is a new template.
+There's no `snapshotConfig.storageLocation`, so snapshots go under ate-api-server's `--snapshot-location`. On kind, that's `gs://ate-snapshots/`, the in-cluster RustFS bucket.
 
-> **Newer than v0.5.0:** on Substrate's `main` branch (PR #2780, after v0.5.0), the template's `sandboxConfig` field is removed. The WorkerPool decides the sandbox class, and a template pins one through its `workerSelector`. These labs target v0.5.0, where `sandboxConfig` is still required. On a newer build, drop that block from the manifests.
+There's no sandbox class either. **The WorkerPool decides the sandbox class**, and a template picks its pools through `workerSelector`. This one matches the `counter` pool, which runs gVisor.
+
+Templates are **immutable**. There's no update: a new version is a new template.
 
 ## Step 4: Write your own template
 
@@ -133,16 +135,10 @@ containers:
     mountPath: /home/counter
 resources:
   limits:
-  - name: cpu
-    quantity: "1"
-  - name: memory
-    quantity: 512Mi
+    cpuMillicores: 1000
+    memoryBytes: 536870912
 snapshotConfig:
   preferredFidelity: SNAPSHOT_FIDELITY_MEMORY
-  storageLocation: gs://ate-snapshots/first-actor/
-sandboxConfig:
-  sandboxClass: gvisor
-  configName: gvisor-default
 volumes:
 - name: data
   durableDir: {}
@@ -172,21 +168,23 @@ The Actor is `ACTOR_STATE_SUSPENDED` with no `WORKER POD`. It's only a record in
 
 ## Step 6: Wake it with traffic
 
-In a separate terminal, port-forward the router:
+The router only accepts mTLS from allowlisted clients. In a separate terminal, start a proxy to the Actor. `kubectl ate proxy actor` gets a client certificate for the `atenet-client` identity, listens on `127.0.0.1:8000`, and sends everything to the Actor's port 80 through the router:
 
 ```bash
-kubectl port-forward -n ate-system svc/atenet-router 8000:80
+kubectl ate proxy actor counter-1 -a first-actor
 ```
 
-Send a request. The `ate-target-actor` header is the routing key: `<atespace>/<actor>`.
+Send a request:
 
 ```bash
-curl -X POST -H "ate-target-actor: first-actor/counter-1" http://localhost:8000
+curl -X POST http://localhost:8000
 ```
 
 ```text
-hello from: 10.x.x.x | preserved memory count: 1 | preserved file counter: 1 | preserved rootfs counter: 1
+preserved memory count: 1 | preserved file counter: 1 | preserved rootfs counter: 1
 ```
+
+The proxy adds the routing key for you: the `ate-target-actor: first-actor/counter-1` header.
 
 The router saw a suspended Actor, asked ate-api-server to **resume** it onto a free worker, waited for it to be ready, and then forwarded the request.
 
@@ -195,7 +193,7 @@ kubectl ate get actor counter-1 -a first-actor
 kubectl ate get workers
 ```
 
-The Actor is now `ACTOR_STATE_RUNNING`, with a `WORKER POD` and `WORKER IPS`. In `get workers`, one worker now shows `ACTORS` `1/1000`, `CPU` `1/1`, and `MEMORY` `512Mi/1Gi`: the template's limits are now reserved on that worker.
+The Actor is now `ACTOR_STATE_RUNNING`, with a `WORKER POD` and `WORKER IPS`. In `get workers`, one worker now shows `ACTORS` `1/1000`, `CPU(MILLICORES)` `1000/1000`, and `MEMORY` `512Mi/960Mi`: the template's limits are now reserved on that worker.
 
 Send a few more requests and watch all three counters climb.
 
@@ -207,10 +205,12 @@ kubectl ate get actor counter-1 -a first-actor
 kubectl ate get workers
 ```
 
-Substrate checkpointed the sandbox (memory, rootfs changes, and the durable volume) to snapshot storage and freed the worker. Now send another request:
+Substrate checkpointed the sandbox (memory, rootfs changes, and the durable volume) and freed the worker. By default, `suspend` returns once the snapshot is on the worker's node, and uploads it to snapshot storage in the background. Pass `--mode=sync` to wait for the upload.
+
+The proxy from Step 6 is still running. Send another request through it:
 
 ```bash
-curl -X POST -H "ate-target-actor: first-actor/counter-1" http://localhost:8000
+curl -X POST http://localhost:8000
 ```
 
 All three counters continue from where they stopped. The **memory** count surviving is the interesting part: the process wasn't restarted, it was restored. Check which worker it landed on. It may be a different Pod than before:
@@ -232,10 +232,9 @@ kubectl ate logs actor counter-1 -a first-actor --source=lifecycle
 
 ## Clean up
 
-An Actor is deleted from `SUSPENDED` (or `CRASHED`) by default:
+Stop the proxy with Ctrl-C. Deleting a running Actor stops its workload and frees its worker first, so there's no need to suspend it:
 
 ```bash
-kubectl ate suspend actor counter-1 -a first-actor
 kubectl ate delete actor counter-1 -a first-actor
 kubectl ate delete actor-template my-counter -a first-actor
 kubectl ate delete atespace first-actor
@@ -246,5 +245,5 @@ Deleting the template also deletes its golden Actor and golden snapshot. An ates
 Keep the counter demo for the next labs. To remove it later:
 
 ```bash
-hack/install-ate-kind.sh --delete-demo-counter
+go run ./cmd/ate-setup delete demo counter
 ```

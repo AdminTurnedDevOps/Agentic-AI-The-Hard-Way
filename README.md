@@ -135,7 +135,7 @@ The labs within this section go over Agent Substrate in a standalone fashion. No
 3. [Your First Actor](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent-substrate/first-actor.md)
 4. [Multi-Tenant Actors](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent-substrate/multi-tenancy-teleport.md)
 5. [MicroVM As Your Isolation Layer](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent-substrate/microvm.md)
-6. [Parking and Scaling Actors](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent-substrate/parking-autoscaling.md)
+6. [Request Parking](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent-substrate/parking-autoscaling.md)
 7. [Multiplexing Actors](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent-substrate/multiplexing.md)
 8. [Substrate Observability](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent-substrate/observability.md)
 9. [One Worker, Many Actors](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent-substrate/worker-packing.md)

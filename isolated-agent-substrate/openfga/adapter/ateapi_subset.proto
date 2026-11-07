@@ -1,7 +1,8 @@
-// Wire-compatible subset of substrate/pkg/proto/ateapipb/ateapi.proto.
-// Check field numbers against the Substrate checkout used by the lab.
+// Wire-compatible subset of substrate api/ateapi/v1/ateapi.proto (v1.0.0).
+// gRPC routes by package, so the package must match too. Check the field
+// numbers against the Substrate checkout used by the lab.
 syntax = "proto3";
-package ateapi;
+package substrate.ateapi.v1;
 
 service Control {
   rpc GetActor(GetActorRequest) returns (Actor);

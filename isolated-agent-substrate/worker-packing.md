@@ -1,25 +1,25 @@
 # Workers Hosting Several Actors
 
-Since Substrate v0.5.0, a worker Pod isn't limited to one Actor. It hosts **several Actors at once**, each in its own gVisor sandbox with its own network namespace, until it runs out of room. This lab builds a WorkerPool sized by **memory**, packs it with Actors, mixes Actor sizes, and shows exactly what's reserved on each worker.
+A worker Pod isn't limited to one Actor. It hosts **several Actors at once**, each in its own gVisor sandbox with its own network namespace, until it runs out of room. This lab builds a WorkerPool sized by **memory**, packs it with Actors, mixes Actor sizes, and shows exactly what's reserved on each worker.
 
-> **Status:** Commands checked against the Substrate **v0.5.0** source. Not yet run end to end on a cluster.
+> **Status:** Commands checked against the Substrate **v1.0.0** source. Not yet run end to end on a cluster.
 
 ## How much fits on a worker
 
 Two numbers decide it.
 
-**The worker's capacity** is the CPU and memory **limits** you set on the WorkerPool (`spec.template.resources.limits`). The WorkerPool controller passes those limits to the worker's `ateom` container through the Kubernetes downward API. The worker reads them **once, at startup**, and reports them to ate-api-server.
+**The worker's capacity** comes from the CPU and memory **limits** you set on the WorkerPool (`spec.template.resources.limits`). The WorkerPool controller passes those limits to the worker's `ateworker` container through the Kubernetes downward API. The worker reads them **once, at startup**, keeps **64 MiB** of the memory for itself (its own process, plus page cache for up to two checkpoints writing at once), and reports the rest to ate-api-server.
 
-**The Actor's size** is the `resources.limits` on its ActorTemplate. It does two jobs:
+**The Actor's size** is the `resources.limits` on its ActorTemplate: `cpuMillicores` and `memoryBytes`. It does two jobs:
 
-- **Sizes the sandbox.** In gVisor, `limits.memory` becomes the sandbox's cgroup `memory.max`, and `limits.cpu` becomes its CPU quota.
+- **Sizes the sandbox.** In gVisor, `memoryBytes` caps the sandbox's memory, gVisor's own kernel (the Sentry) included, and `cpuMillicores` becomes its cgroup CPU quota.
 - **Reserves capacity.** When the Actor is placed on a worker, its limits are subtracted from that worker's remaining capacity.
 
 An Actor is placed only on a worker where **every** dimension it declares still fits:
 
 ```text
-Actors per worker = min( worker memory / Actor memory,
-                         worker CPU    / Actor CPU,
+Actors per worker = min( worker memory capacity / Actor memory,
+                         worker CPU capacity    / Actor CPU,
                          --max-actors  (default 1000) )
 ```
 
@@ -27,27 +27,25 @@ In this lab:
 
 | | CPU | Memory |
 | --- | --- | --- |
-| Worker capacity (WorkerPool limits) | `2` | `1Gi` |
-| `mem-256` Actor (template limits) | `250m` | `256Mi` |
+| WorkerPool limits | `2` | `1088Mi` |
+| Worker capacity (memory less the 64 MiB the worker keeps) | `2000` millicores | `1Gi` |
+| `mem-256` Actor (template limits) | `250` millicores | `256Mi` |
 | Fits per worker | 8 | **4** |
 
 Memory is the tighter limit, so **four** `mem-256` Actors fit on each worker, and two `mem-512` Actors.
 
 Three rules to size by:
 
-- **Set both CPU and memory limits on the WorkerPool.** If you leave one out, the downward API reports the **node's allocatable** amount for it, so the worker advertises capacity it doesn't own.
-- **Set `resources.limits` on every template.** An Actor with no limits reserves nothing, so only the actor count (`--max-actors`, 1000) stops placement.
-- **Leave headroom.** The scheduler only adds up the Actors' limits. It reserves nothing for `ateom` or gVisor's own overhead, which run inside the same worker Pod, under the same Pod memory limit. Measure the real usage with `kubectl ate top worker -n <namespace>` and size the WorkerPool above *N × Actor memory*.
+- **Set both CPU and memory limits on the WorkerPool.** If you leave one out, the worker reports zero capacity for it, and the scheduler treats zero as **unconstrained**: that dimension never stops placement.
+- **Set `resources.limits` on every template.** Both `cpuMillicores` and `memoryBytes` are required, and they're the only thing placement adds up.
+- **Size the pool for the Actors, plus 64 MiB.** A WorkerPool memory limit of *N × Actor memory + 64 MiB* fits exactly *N* Actors. Measure real usage with `kubectl ate top workers -n <namespace>`.
 
 ## Prerequisites
 
 - [Install Agent Substrate (Standalone)](installation.md).
-- The counter demo (`hack/install-ate-kind.sh --deploy-demo-counter`). This lab reuses its counter image and its worker image.
-- The router port-forward running in a separate terminal:
-
-```bash
-kubectl port-forward -n ate-system svc/atenet-router 8000:80
-```
+- The counter demo (`go run ./cmd/ate-setup deploy demo counter`). This lab reuses its counter image and its worker image.
+- The lab router client and the `ate_curl` function from [installation Step 5](installation.md#step-5-create-the-lab-router-client), defined in this shell.
+- About 2.2 GiB of free memory on the kind node for the two workers.
 
 ## Step 1: Get the images
 
@@ -73,7 +71,7 @@ kind: Namespace
 metadata:
   name: ate-packing
 ---
-apiVersion: ate.dev/v1alpha1
+apiVersion: ate.dev/v1
 kind: WorkerPool
 metadata:
   name: packing
@@ -81,18 +79,18 @@ metadata:
   labels:
     workload: packing
 spec:
-  replicas: 1
+  replicas: 2
   workerImage: ${WORKER_IMAGE}
   sandboxClasses:
   - name: gvisor
   template:
     resources:
       limits:
-        cpu: "10"
-        memory: 10Gi
+        cpu: "2"
+        memory: 1088Mi
       requests:
-        cpu: 1000m
-        memory: 6Gi
+        cpu: 250m
+        memory: 1088Mi
 EOF
 
 kubectl rollout status deployment/packing -n ate-packing
@@ -107,11 +105,11 @@ kubectl ate get workers -n ate-packing
 ```
 
 ```text
-NAME   POOL      STATE                 ACTORS   CPU   MEMORY   POD                          AGE
-...    packing   WORKER_STATE_ACTIVE   0/1000   0/2   0/1Gi    ate-packing/packing-...      ...
+NAME   POOL      STATE                 ACTORS   CPU(MILLICORES)   MEMORY   POD                       AGE
+...    packing   WORKER_STATE_ACTIVE   0/1000   0/2000            0/1Gi    ate-packing/packing-...   ...
 ```
 
-`ACTORS`, `CPU`, and `MEMORY` are **allocated/capacity**. Each worker has 2 CPUs and 1 GiB to give, and nothing is placed yet.
+`ACTORS`, `CPU(MILLICORES)`, and `MEMORY` are **allocated/capacity**. Each worker has 2000 millicores and 1 GiB to give, and nothing is placed yet.
 
 ## Step 3: Create two Actor sizes
 
@@ -139,16 +137,10 @@ containers:
       port: 80
 resources:
   limits:
-  - name: cpu
-    quantity: 250m
-  - name: memory
-    quantity: ${size}Mi
+    cpuMillicores: 250
+    memoryBytes: $((size * 1024 * 1024))
 snapshotConfig:
   preferredFidelity: SNAPSHOT_FIDELITY_MEMORY
-  storageLocation: gs://ate-snapshots/packing/
-sandboxConfig:
-  sandboxClass: gvisor
-  configName: gvisor-default
 EOF
 done
 ```
@@ -161,7 +153,7 @@ kubectl ate get actor-templates -a packing
 
 ## Step 4: Pack the pool with 256 Mi Actors
 
-Two workers × four Actors = **8**. Create **9** and wake them one at a time:
+Two workers × four Actors = **8**. Create **9** and wake eight of them, one at a time:
 
 ```bash
 for i in $(seq 1 9); do
@@ -169,7 +161,7 @@ for i in $(seq 1 9); do
 done
 
 for i in $(seq 1 8); do
-  curl -s -X POST -H "ate-target-actor: packing/a$i" http://localhost:8000
+  ate_curl "packing/a$i" -X POST
 done
 ```
 
@@ -178,12 +170,12 @@ kubectl ate get workers -n ate-packing
 ```
 
 ```text
-ACTORS   CPU   MEMORY
-4/1000   1/2   1Gi/1Gi
-4/1000   1/2   1Gi/1Gi
+ACTORS   CPU(MILLICORES)   MEMORY
+4/1000   1000/2000         1Gi/1Gi
+4/1000   1000/2000         1Gi/1Gi
 ```
 
-Both workers are **full on memory** (4 × 256 Mi = 1 GiB) while half their CPU is still free (4 × 250m = 1 CPU). Memory decided it.
+Both workers are **full on memory** (4 × 256 Mi = 1 GiB) while half their CPU is still free (4 × 250 = 1000 millicores). Memory decided it.
 
 See which Actors share which Pod:
 
@@ -198,8 +190,7 @@ Four Actor names per worker Pod. Each one is a separate gVisor sandbox with its 
 Now request the ninth:
 
 ```bash
-curl -s -w '\n-> HTTP %{http_code} in %{time_total}s\n' \
-  -X POST -H "ate-target-actor: packing/a9" http://localhost:8000
+ate_curl packing/a9 -X POST -w '\n-> HTTP %{http_code} in %{time_total}s\n'
 ```
 
 No worker has 256 Mi free. The router **parks** the request for its 5-second budget, as in the [parking lab](parking-autoscaling.md), and then returns `503`. Nothing frees up, because packed Actors don't leave until they're suspended.
@@ -226,7 +217,7 @@ That worker now shows `MEMORY 512Mi/1Gi` and `ACTORS 2/1000`. Wake one **512 Mi*
 
 ```bash
 kubectl ate create actor b1 -a packing --template mem-512
-curl -s -X POST -H "ate-target-actor: packing/b1" http://localhost:8000
+ate_curl packing/b1 -X POST
 kubectl ate get workers -n ate-packing
 ```
 
@@ -240,7 +231,7 @@ Now wake `a9` again. There's still no 256 Mi gap anywhere, so it parks and fails
 
 ```bash
 kubectl ate suspend actor a3 -a packing
-curl -s -X POST -H "ate-target-actor: packing/a9" http://localhost:8000
+ate_curl packing/a9 -X POST
 ```
 
 ## Step 6: Read capacity and allocation from the API
@@ -251,32 +242,29 @@ The table columns come from each Worker record's status:
 kubectl ate get workers -n ate-packing -o yaml
 ```
 
+For the worker that holds `b1`, the status looks like this (other fields trimmed):
+
 ```yaml
-status:
-  capacity:
-    actors: 1000
-    resources:
-      limits:
-      - name: cpu
-        quantity: "2"
-      - name: memory
-        quantity: 1Gi
-  allocated:
-    actors: 3
-    resources:
-      limits:
-      - name: cpu
-        quantity: 750m
-      - name: memory
-        quantity: 1Gi
+workers:
+- ...
+  status:
+    allocated:
+      actors: 3
+      cpuMillicores: "750"
+      memoryBytes: "1073741824"
+    capacity:
+      actors: 1000
+      cpuMillicores: "2000"
+      memoryBytes: "1073741824"
+    state: WORKER_STATE_ACTIVE
 ```
 
-`capacity` is what the worker reported at startup (the WorkerPool's limits, plus the actor limit). `allocated` is the sum of the limits of the Actors placed on it right now.
+`capacity` is what the worker reported at startup: the WorkerPool's limits less the 64 MiB it keeps, plus the actor limit. `allocated` is the sum of the limits of the Actors placed on it right now. The API serializes 64-bit integers as strings, so the CPU and memory values are quoted.
 
 Compare that with what the Pod actually uses:
 
 ```bash
-kubectl ate top worker -n ate-packing
+kubectl ate top workers -n ate-packing
 ```
 
 Real usage is far below `allocated`, because a counter barely uses memory. Placement is decided by the **declared limits**, not by usage. That's what makes it predictable.
@@ -292,18 +280,19 @@ for a in $(kubectl ate get actors -a packing -o json | jq -r \
 done
 
 kubectl patch workerpool packing -n ate-packing --type merge \
-  -p '{"spec":{"template":{"resources":{"limits":{"cpu":"2","memory":"2Gi"},"requests":{"cpu":"250m","memory":"2Gi"}}}}}'
+  -p '{"spec":{"template":{"resources":{"limits":{"cpu":"2","memory":"2112Mi"},"requests":{"cpu":"250m","memory":"2112Mi"}}}}}'
 kubectl rollout status deployment/packing -n ate-packing
 kubectl ate get workers -n ate-packing
 ```
 
-Each new worker reports `MEMORY 0/2Gi`, which is room for eight `mem-256` Actors. Your kind node needs about 4 GiB of free memory for the two larger workers.
+`2112Mi` is 2 GiB plus the 64 MiB the worker keeps. Each new worker reports `MEMORY 0/2Gi`, which is room for eight `mem-256` Actors. Your kind node needs about 4.2 GiB of free memory for the two larger workers.
 
 ## Clean up
 
 ```bash
-for a in $(kubectl ate get actors -a packing -o json | jq -r '.actors[].metadata.name'); do
-  kubectl ate delete actor "$a" -a packing --any-state
+for a in $(kubectl ate get actors -a packing -o json | jq -r \
+    '.actors[].metadata.name | select(test("^[ab][0-9]+$"))'); do
+  kubectl ate delete actor "$a" -a packing
 done
 kubectl ate delete actor-template mem-256 -a packing
 kubectl ate delete actor-template mem-512 -a packing
@@ -311,4 +300,4 @@ kubectl ate delete atespace packing
 kubectl delete namespace ate-packing
 ```
 
-Deleting the namespace deletes the WorkerPool and its worker Pods.
+`delete actor` works from any state, so the loop also removes Actors that are still running. The filter skips the templates' golden Actors, which have UUID names; deleting a template deletes its golden Actor. Deleting the namespace deletes the WorkerPool and its worker Pods.
