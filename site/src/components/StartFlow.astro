@@ -1,0 +1,21 @@
+---
+import NavList from './NavList.astro';
+import type { NavGroup } from '../lib/readme-nav';
+
+interface Props {
+  startHere: NavGroup;
+  /** Draw one arrow branch to each `data-arrow-target` in the slot, instead of a single arrow. */
+  fork?: boolean;
+}
+const { startHere, fork = false } = Astro.props;
+---
+<div class:list={['flow', { 'is-fork': fork }]}>
+  <div class="start sk">
+    <h3>Start here</h3>
+    <NavList items={startHere.items} />
+  </div>
+  <svg class="flow-arrow" data-rough-arrow={fork ? 'fork' : 'single'} viewBox="0 0 60 40" aria-hidden="true" focusable="false">
+    <text x="30" y="27" text-anchor="middle">→</text>
+  </svg>
+  <slot />
+</div>

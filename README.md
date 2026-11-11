@@ -89,6 +89,10 @@ Below are some ideas on what you can use to set up your AI workstation. However,
 3. [LLM Provider Subscription/Runtime](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/workstation-setup/agent-runtime.md)
    - [Key Implementations](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/workstation-setup/a-few-key-features.md)
 
+## Running Agentic
+
+These labs are about building Agents and running them on Kubernetes: Models, MCP tools, an AI Gateway in front of the traffic, evals, and how much autonomy you hand over.
+
 ### Platform Engineering Assistant
 
 These labs will use Llama for the LLM, Kubernetes for the Agent runtime, and a broken app that the PE assistant Agent will help you fix.
@@ -113,6 +117,33 @@ These labs will use Llama for the LLM, Kubernetes for the Agent runtime, and a b
     - [Agent Identity]()
 8. [Implementing Agent Registry for Shadow AI]()
 9. [Researcher Agent + Agent Evals For Platform Engineering Tasks](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/platform-engineering-assistant/platform-assistant-agent-evals.md)
+
+### The Observer
+
+These labs will use DeepSeek R1 (`deepseek-r1:8b`) running locally with Ollama for the LLM.
+
+1. [Create an Agent](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/tree/main/the-observer/create-agent)
+2. [Test the Agent locally]()
+3. [Set up long-term memory management]()
+4. [Implementing web search/RAG]()
+5. [Implement Agent Skills]()
+6. [Adding agentgateway for an AI Gateway]()
+7. [Implementing Agent Registry to store Skills and Prompts]()
+
+### The Autonomous k8s Engineer
+
+These labs will use an OpenAI GPT Model for the LLM (or any other [kagent supported provider](https://kagent.dev/docs/kagent/supported-providers)).
+
+1. [Deploy kagent with OpenAI](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/autonomous-k8s-engineer/openai-install.md)
+2. [Deploy demo app](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/autonomous-k8s-engineer/demo-app.md)
+3. [Scale Pods down](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/autonomous-k8s-engineer/scale-down.md)
+4. [Deploy the self-healing agent](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/autonomous-k8s-engineer/self-healing-agent.md)
+5. [Log checks](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/autonomous-k8s-engineer/logs.md)
+6. [Deploy the self-healing checker](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/autonomous-k8s-engineer/self-healing-checker.md)
+
+## Agentic Sandboxing & Infrastructure
+
+These labs are about what Agents run on: isolating them in sandboxes (gVisor and microVMs) with Agent Substrate, and controlling what an Agent can reach, who can call it, and what it costs.
 
 ### Isolated Agents With kagent + Agent substrate
 
@@ -141,27 +172,3 @@ The labs within this section go over Agent Substrate in a standalone fashion. No
 9. [One Worker, Many Actors](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent-substrate/worker-packing.md)
 10. [ReBAC With OpenFGA and Substrate](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent-substrate/openfga-permissions.md)
 11. [Cost Optimization With Substrate](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent-substrate/cost-comparison.md)
-
-
-### The Observer
-
-These labs will use DeepSeek R1 (`deepseek-r1:8b`) running locally with Ollama for the LLM.
-
-1. [Create an Agent](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/tree/main/the-observer/create-agent)
-2. [Test the Agent locally]()
-3. [Set up long-term memory management]()
-4. [Implementing web search/RAG]()
-5. [Implement Agent Skills]()
-6. [Adding agentgateway for an AI Gateway]()
-7. [Implementing Agent Registry to store Skills and Prompts]()
-
-### The Autonomous k8s Engineer
-
-These labs will use an OpenAI GPT Model for the LLM (or any other [kagent supported provider](https://kagent.dev/docs/kagent/supported-providers)).
-
-1. [Deploy kagent with OpenAI](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/autonomous-k8s-engineer/openai-install.md)
-2. [Deploy demo app](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/autonomous-k8s-engineer/demo-app.md)
-3. [Scale Pods down](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/autonomous-k8s-engineer/scale-down.md)
-4. [Deploy the self-healing agent](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/autonomous-k8s-engineer/self-healing-agent.md)
-5. [Log checks](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/autonomous-k8s-engineer/logs.md)
-6. [Deploy the self-healing checker](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/autonomous-k8s-engineer/self-healing-checker.md)

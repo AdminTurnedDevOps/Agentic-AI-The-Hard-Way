@@ -2,7 +2,8 @@
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import NavList from '../components/NavList.astro';
-import TrackBox from '../components/TrackBox.astro';
+import StartFlow from '../components/StartFlow.astro';
+import TrackCard from '../components/TrackCard.astro';
 import banner from '../../../images/banner.png';
 import { loadSiteNav } from '../lib/repo';
 import { BANNER_ALT, HERO_HEADING } from '../lib/site';
@@ -19,20 +20,13 @@ const sections = nav.sections.filter((s) => s.items.length > 0);
     <Image src={banner} alt={BANNER_ALT} class="hero-banner" widths={[640, 1024]} sizes="(max-width: 1000px) 100vw, 55vw" loading="eager" />
   </section>
 
-  <section class="scenarios" id="scenarios" aria-labelledby="scenarios-title">
-    <h2 id="scenarios-title">Pick a scenario</h2>
-    <div class="flow">
-      <div class="start sk">
-        <h3>Start here</h3>
-        <NavList items={nav.startHere.items} />
+  <section class="choose" id="tracks" aria-labelledby="tracks-title">
+    <h2 id="tracks-title">Pick a track</h2>
+    <StartFlow startHere={nav.startHere} fork>
+      <div class="track-cards">
+        {nav.tracks.map((track, i) => <TrackCard track={track} alt={i % 2 === 1} />)}
       </div>
-      <svg class="flow-arrow" data-rough-arrow viewBox="0 0 60 40" aria-hidden="true" focusable="false">
-        <text x="30" y="27" text-anchor="middle">→</text>
-      </svg>
-      <div class="tracks">
-        {nav.tracks.map((track) => <TrackBox track={track} />)}
-      </div>
-    </div>
+    </StartFlow>
   </section>
 
   {sections.map((section) => (

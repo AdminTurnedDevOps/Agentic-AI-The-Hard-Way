@@ -1,0 +1,38 @@
+---
+import Base from '../../layouts/Base.astro';
+import ScenarioBox from '../../components/ScenarioBox.astro';
+import StartFlow from '../../components/StartFlow.astro';
+import { loadSiteNav } from '../../lib/repo';
+import type { NavTrack } from '../../lib/readme-nav';
+
+export function getStaticPaths() {
+  return loadSiteNav().tracks.map((track) => ({ params: { track: track.slug }, props: { track } }));
+}
+
+const { track } = Astro.props as { track: NavTrack };
+const nav = loadSiteNav();
+const others = nav.tracks.filter((t) => t.slug !== track.slug);
+---
+<Base title={track.title} description={track.blurb ?? undefined}>
+  <header class="track-head">
+    <div>
+      <h1>{track.title}</h1>
+      {track.blurb && <p>{track.blurb}</p>}
+    </div>
+    {others.length > 0 && (
+      <p class="other-tracks">
+        {others.length === 1 ? 'The other track: ' : 'Other tracks: '}
+        {others.map((other, i) => <>{i > 0 && ', '}<a href={other.route}>{other.title}</a></>)}
+      </p>
+    )}
+  </header>
+
+  <section class="scenarios" id="scenarios" aria-labelledby="scenarios-title">
+    <h2 id="scenarios-title">Pick a scenario</h2>
+    <StartFlow startHere={nav.startHere}>
+      <div class="scenario-boxes">
+        {track.scenarios.map((scenario) => <ScenarioBox scenario={scenario} />)}
+      </div>
+    </StartFlow>
+  </section>
+</Base>

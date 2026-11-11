@@ -10,7 +10,7 @@ const write = (p: string, text: string) => {
   fs.mkdirSync(path.dirname(path.join(root, p)), { recursive: true });
   fs.writeFileSync(path.join(root, p), text);
 };
-write('README.md', `# T\n\nIntro text.\n\n## Labs\n\n### Track\n\n1. [One](${R}/blob/main/t/one.md)\n2. [App](${R}/tree/main/apps/app)\n`);
+write('README.md', `# T\n\nIntro text.\n\n## Labs\n\n## Track\n\n### Scenario\n\n1. [One](${R}/blob/main/t/one.md)\n2. [App](${R}/tree/main/apps/app)\n`);
 write('t/one.md', `# One\n\n![shot](../images/used.png)\n\nSee [aks](${R}/tree/main/infra/aks).\n`);
 write('t/orphan.md', 'not linked');
 write('apps/app/setup.md', 'setup');
@@ -32,7 +32,7 @@ describe('walkRepo', () => {
 
 describe('loadSiteNav / folderDirs / folderFiles', () => {
   it('loads the nav from a repo root', () => {
-    expect(loadSiteNav(root).tracks[0].items.map((i) => i.type === 'lab' && i.route)).toEqual(['/t/one/', '/apps/app/']);
+    expect(loadSiteNav(root).tracks[0].scenarios[0].items.map((i) => i.type === 'lab' && i.route)).toEqual(['/t/one/', '/apps/app/']);
   });
   it('collects folder links from README and pages', () => {
     expect(folderDirs(root)).toEqual(['apps/app', 'infra/aks']);

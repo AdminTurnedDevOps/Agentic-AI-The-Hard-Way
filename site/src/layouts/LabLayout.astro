@@ -1,18 +1,19 @@
 ---
 import Base from './Base.astro';
 import NavList from '../components/NavList.astro';
-import type { LabItem, NavGroup } from '../lib/readme-nav';
+import type { LabItem, NavGroup, NavTrack } from '../lib/readme-nav';
 
 interface Props {
   title: string;
   route: string;
   github: string;
   group: NavGroup | null;
+  track: NavTrack | null;
   position: { index: number; total: number } | null;
   prev: LabItem | null;
   next: LabItem | null;
 }
-const { title, route, github, group, position, prev, next } = Astro.props;
+const { title, route, github, group, track, position, prev, next } = Astro.props;
 ---
 <Base title={title}>
   <div class="lab-layout">
@@ -30,14 +31,14 @@ const { title, route, github, group, position, prev, next } = Astro.props;
           <NavList items={group.items} current={route} ordered />
         </details>
       ) : (
-        <p class="side-orphan">This page isn't in the README's lab list yet. <a href="/#scenarios">All scenarios</a></p>
+        <p class="side-orphan">This page isn't in the README's lab list yet. <a href="/#tracks">All tracks</a></p>
       )}
     </nav>
     <article class="lab-main" data-pagefind-body>
       <header class="lab-head">
         <h1 data-pagefind-meta="title">{title}</h1>
         <div class="lab-meta" data-pagefind-ignore>
-          {group && <span>{group.title}{position && ` / lab ${position.index} of ${position.total}`}</span>}
+          {group && <span>{track && <><a href={track.route}>{track.title}</a> / </>}{group.title}{position && ` / lab ${position.index} of ${position.total}`}</span>}
           <a href={github}>View on GitHub</a>
         </div>
       </header>

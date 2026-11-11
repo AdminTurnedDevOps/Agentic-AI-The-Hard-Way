@@ -1,0 +1,27 @@
+---
+import { countItems, trackTotals, type NavTrack } from '../lib/readme-nav';
+import { labCountLabel, plural } from '../lib/site';
+
+interface Props {
+  track: NavTrack;
+  alt?: boolean;
+}
+const { track, alt = false } = Astro.props;
+const totals = trackTotals(track);
+---
+<article id={track.slug} class:list={['track-card', alt ? 'sk-alt' : 'sk']} data-box-href={track.route} data-arrow-target>
+  <div>
+    <h3><a href={track.route}>{track.title}</a></h3>
+    {track.blurb && <p class="track-card-blurb">{track.blurb}</p>}
+    <p class="track-card-total">{plural(totals.scenarios, 'scenario')}, {plural(totals.labs, 'lab')}</p>
+  </div>
+  <ul class="track-card-scenarios">
+    {track.scenarios.map((scenario) => (
+      <li>
+        <span class:list={['chip', scenario.color ? `fill-${scenario.color}` : 'is-empty']} aria-hidden="true"></span>
+        <a href={`${track.route}#${scenario.slug}`}>{scenario.title}</a>
+        <span class="track-card-count">{labCountLabel(countItems(scenario), false)}</span>
+      </li>
+    ))}
+  </ul>
+</article>

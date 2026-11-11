@@ -27,9 +27,10 @@ Run every command from `site/`. The build reads the repo root at `..`.
 ## How content maps to pages
 
 - `path/to/lab.md` → `/path/to/lab/`. A folder linked with a GitHub `tree/main/...` URL → `/path/to/folder/`, showing its markdown and code files.
-- The README's `## Labs` section, read top to bottom:
-  - `##` starts a section.
-  - `###` starts a track.
+- The README from `## Labs` to the end, read top to bottom:
+  - A `##` with `###` headings under it is a **track**: a card on the home page and a page at `/tracks/<slug>/`. Its first paragraph is the card's description.
+  - Each `###` is a **scenario**: a box of labs on its track's page. A `###` with no `##` track above it fails the build.
+  - A `##` with its own list and no `###` is a section (for example, AI Workstation Setup). A `##` can't have both.
   - List items are labs; nested items are sub-labs.
   - `[x]()` means coming soon.
 - Links to `github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/(blob|tree)/main/...` become site links. A link to a missing file fails the build.
@@ -69,7 +70,7 @@ Point the domain's nameservers back to Squarespace first, or the domain stops re
 site/
   src/lib/        README parser, routes, variables, repo access
   src/plugins/    remark plugins (links, code variables, H1 demotion)
-  src/pages/      home, [...slug] (labs and folders), 404
+  src/pages/      home (pick a track), tracks/[track] (its scenarios), [...slug] (labs and folders), 404
   src/scripts/    client scripts (copy, fill-in, search, theme, arrow)
   scripts/        post-build: CSP config, link check
   tests/          unit (vitest) and e2e (Playwright)

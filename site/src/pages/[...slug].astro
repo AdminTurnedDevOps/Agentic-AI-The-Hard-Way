@@ -21,6 +21,8 @@ export async function getStaticPaths() {
     seen.set(slug, source);
     paths.push({ params: { slug }, props });
   };
+  // Track pages live at /tracks/<slug>/ (pages/tracks/[track].astro); a repo path must not shadow one.
+  for (const track of loadSiteNav().tracks) seen.set(track.route.slice(1, -1), `the "${track.title}" track page`);
   for (const entry of entries) add(repoPathToRoute(`${entry.id}.md`, 'file'), `${entry.id}.md`, { kind: 'md', entry });
   for (const dir of folderDirs(REPO_ROOT)) add(repoPathToRoute(dir, 'dir'), `${dir}/`, { kind: 'dir', dir });
   return paths;
@@ -51,6 +53,7 @@ const folderContents = await Promise.all(folderEntries.map(async (e) => (await r
   route={route}
   github={githubUrl(repoPath, kind)}
   group={found?.group ?? null}
+  track={found?.track ?? null}
   position={index >= 0 ? { index: index + 1, total: labs.length } : null}
   prev={index > 0 ? labs[index - 1] : null}
   next={index >= 0 && index < labs.length - 1 ? labs[index + 1] : null}

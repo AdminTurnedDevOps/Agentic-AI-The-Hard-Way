@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { copyFrom, GATEWAY_LAB, withProductionCsp } from './helpers';
+import { loadSiteNav } from '../../src/lib/repo';
 
 test('secrets get no input, are never stored, and stay as $VAR when copied', async ({ page }) => {
   await page.goto(GATEWAY_LAB);
@@ -19,9 +20,12 @@ test('stored secret is ignored', async ({ page }) => {
   await expect(page.locator('.var[data-var="ANTHROPIC_API_KEY"]').first()).toHaveText('$ANTHROPIC_API_KEY');
 });
 
-test('no CSP violations on home, a lab page and a search', async ({ page }) => {
+test('no CSP violations on home, a track page, a lab page and a search', async ({ page }) => {
   const violations = await withProductionCsp(page);
   await page.goto('/');
+  await expect(page.locator('svg[data-rough-arrow] > g').first()).toBeAttached();
+  await page.goto(loadSiteNav().tracks[0].route);
+  await expect(page.locator('svg[data-rough-arrow] > g').first()).toBeAttached();
   await page.goto(GATEWAY_LAB);
   await page.locator('#site-search').fill('substrate');
   await expect(page.locator('[data-search-results] a').first()).toBeVisible();
