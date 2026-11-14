@@ -2,7 +2,7 @@
 
 Prefer reading in a browser? Visit [agenticfieldguide.ai](https://agenticfieldguide.ai).
 
-This tutorial contains four full, real-world scenarios for Agentic AI. As the industry moves from more of a GenAI mindset to an autonomous/Agentic AI way of thinking, having a few key scenarios that engineers can use to not only learn about Agentic AI, but get ideas on what they can implement with be the new need.
+This tutorial contains full, real-world scenarios for Agentic infrastructure & workloads. As the industry moves from standard workloads and microservices to "AI all the things", having a few key scenarios that engineers can use to not only learn about Agentic AI, but get ideas on what they can implement.
 
 **PLEASE NOTE:** This is currently a WIP and was started on 1/4/2026. If you click a link and it doesn't work or is blank, that is because this project is still being worked on.
 
