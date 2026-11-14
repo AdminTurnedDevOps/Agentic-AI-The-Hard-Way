@@ -120,6 +120,7 @@ The labs within this section go over Agent Substrate in a standalone fashion. No
 9. [One Worker, Many Actors](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent-substrate/worker-packing.md)
 10. [ReBAC With OpenFGA and Substrate](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent-substrate/openfga-permissions.md)
 11. [Cost Optimization With Substrate](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent-substrate/cost-comparison.md)
+12. [Agentic RL With OpenEnv and Substrate](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent-substrate/agentic-rl-openenv.md)
 
 ## Running Agentic
 
