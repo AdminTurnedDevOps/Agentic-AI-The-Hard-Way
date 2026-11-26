@@ -104,6 +104,7 @@ This section goes over using kagent + Agent Substrate, which is the way to perfo
 2. [Using Kagent Substrate](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent/kagent-substrate.md)
 3. [Hermes With Kagent + Agent Substrate](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent/byo-harness-hermes.md)
 4. [Egress With Agentgateway For Substrate](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent/inference-with-agw.md)
+5. [Session and Storage Persistence With kagent](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent/session-storage-persistence.md)
 
 ### Isolated Environments With Agent Substrate
 
@@ -122,6 +123,8 @@ The labs within this section go over Agent Substrate in a standalone fashion. No
 11. [Cost Optimization With Substrate](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent-substrate/cost-comparison.md)
 12. [Agentic RL With OpenEnv and Substrate](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent-substrate/agentic-rl-openenv.md)
 13. [Multi-Cluster Placement and Failover](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent-substrate/multi-cluster-failover.md)
+14. [Pick Up Where You Left Off: Suspend and Resume a Session](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent-substrate/suspend-resume-workbench.md)
+15. [Recover an Actor From Worker Loss](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent-substrate/recover-worker-loss.md)
 
 ## Running Agentic
 

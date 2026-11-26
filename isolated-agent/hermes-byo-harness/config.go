@@ -35,11 +35,12 @@ type hermesProvider struct {
 	Model   string `yaml:"model"`
 }
 
-// parseConfig reads the ADKConfig that kagent compiles for every BYO runtime.
+// parseConfig reads the ADKConfig that kagent compiles for every BYO runtime and
+// delivers as the config_json of the bootstrap bundle.
 func parseConfig(raw []byte) (*configv1.ADKConfig, error) {
 	cfg := new(configv1.ADKConfig)
 	if err := runtimeconfig.Unmarshal(raw, cfg); err != nil {
-		return nil, fmt.Errorf("decode %s: %w", configEnv, err)
+		return nil, fmt.Errorf("decode compiled ADKConfig: %w", err)
 	}
 	return cfg, nil
 }

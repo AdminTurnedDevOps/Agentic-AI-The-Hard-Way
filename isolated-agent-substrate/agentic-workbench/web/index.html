@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agent Workbench</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <main>
+    <header class="masthead">
+      <h1>Agent Workbench</h1>
+      <dl class="session">
+        <dt>Process session</dt>
+        <dd><code id="session">Loading…</code></dd>
+      </dl>
+    </header>
+    <div class="panels">
+      <section class="editor" aria-labelledby="file-label">
+        <div class="panel-heading">
+          <label id="file-label" for="file">task.md</label>
+          <button id="save" type="button" disabled>Save file</button>
+        </div>
+        <textarea id="file" disabled spellcheck="false" autocomplete="off" placeholder="Loading workspace…"></textarea>
+        <p class="panel-foot">Saved to the actor’s durable volume</p>
+      </section>
+      <section class="task" aria-labelledby="task-heading">
+        <div class="panel-heading">
+          <h2 id="task-heading">Release review</h2>
+          <span id="step-count"></span>
+        </div>
+        <ol id="steps">
+          <li>Check the release notes</li>
+          <li>Record your findings</li>
+          <li>Hand off the review</li>
+        </ol>
+        <div class="task-action">
+          <button id="advance" type="button" disabled>Advance task</button>
+        </div>
+        <p class="panel-foot">Task progress lives in process memory</p>
+      </section>
+    </div>
+    <p id="status" role="status">Connecting to actor…</p>
+    <button id="retry" type="button" hidden>Retry connection</button>
+  </main>
+</body>
+</html>
