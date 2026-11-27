@@ -105,6 +105,7 @@ This section goes over using kagent + Agent Substrate, which is the way to perfo
 3. [Hermes With Kagent + Agent Substrate](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent/byo-harness-hermes.md)
 4. [Egress With Agentgateway For Substrate](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent/inference-with-agw.md)
 5. [Session and Storage Persistence With kagent](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent/session-storage-persistence.md)
+6. [Recover a kagent Session From Worker Loss](https://github.com/AdminTurnedDevOps/Agentic-AI-The-Hard-Way/blob/main/isolated-agent/recover-session-worker-loss.md)
 
 ### Isolated Environments With Agent Substrate
 
